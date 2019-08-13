@@ -17,14 +17,14 @@ class Song extends Component {
             +
           </button>
         </div>
-        {this.print_key()}
+        {/* {this.print_key()} */}
       </div>
     );
   }
 
-  print_key = () => {
-    console.log("Song.js printing ", this.state.id);
-  };
+  // print_key = () => {
+  //   console.log("Song.js printing ", this.state.id);
+  // };
 }
 
 export default Song;
