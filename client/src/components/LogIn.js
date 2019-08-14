@@ -58,8 +58,9 @@ class LogIn extends Component {
     );
   }
   // test
+
   authorization = () => {
-    console.log("clicked");
+    console.log("clicked and test");
     document.location.href = "http://localhost:8888";
   };
 }
