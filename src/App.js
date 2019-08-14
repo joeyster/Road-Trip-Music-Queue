@@ -1,25 +1,28 @@
 import React from "react";
 import "./App.css";
-import Song from "./components/Song.js";
+// import Song from "./components/Song.js";
 import SearchBar from "./components/SearchBar.js";
+import Playlist from "./components/Playlist";
+import LogIn from "./components/LogIn";
 
 function App() {
   return (
     <div>
       <SearchBar />
-      {test()}
+      {/* {create_playlist_list()} */}
+      <LogIn />
     </div>
   );
 }
 
-let test = () => {
-  let array = ["song1", "song2", "song3", "song4", "song5"];
-  let song_list = [];
-  array.forEach(song => {
-    // console.log(song);
-    song_list.push(<Song key={song} id={song} />);
+let create_playlist_list = () => {
+  let array = ["playlist1", "playlist2", "playlist3", "playlist4", "playlist5"];
+  let playlist_list = [];
+  array.forEach(playlist => {
+    // console.log(playlist);
+    playlist_list.push(<Playlist key={playlist} id={playlist} />);
   });
-  return song_list;
+  return playlist_list;
 };
 
 export default App;
