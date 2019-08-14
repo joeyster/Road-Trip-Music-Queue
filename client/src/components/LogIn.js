@@ -3,7 +3,7 @@ import querystring from "querystring";
 
 let client_id = "19427a009053421cad910c10b315a050"; // Your client id
 let client_secret = "9dabb10eca184b89bce885069db5f4e2"; // Your secret
-let redirect_uri = "http://192.168.1.100:8888/callback"; // Your redirect uri
+let redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
 
 class LogIn extends Component {
   constructor() {
@@ -60,8 +60,8 @@ class LogIn extends Component {
 
   authorization = () => {
     console.log("clicked");
-    document.location.href = "http://192.168.1.100:8888";
+    document.location.href = "http://localhost:8888";
   };
 }
-// test branch
+
 export default LogIn;
