@@ -16,13 +16,12 @@ class SearchBar extends Component {
           <input className="form-control" placeholder="Search songs" />
         </div>
         <div className="col-2 pl-2">
-          <button className="btn btn-primary btn-block align-center btn-dark">
-            <img
-              src="./search_icon.png"
-              alt="search"
-              className="img-fluid"
-              onClick={this.search}
-            />
+          <button
+            id="login_btn"
+            className="btn btn-block btn-dark"
+            onClick={this.search}
+          >
+            <img src="./search_icon.png" alt="search" width="18" length="18" />
           </button>
         </div>
       </div>
@@ -30,18 +29,19 @@ class SearchBar extends Component {
   }
 
   search = () => {
-    const BASE_URL = "https://api.spotify.com/v1/me/player/pause";
+    console.log("hey");
+    // const BASE_URL = "https://api.spotify.com/v1/me/player/pause";
 
-    var myOptions = {
-      method: "PUT",
-      headers: {
-        Authorization: "Bearer " + accessToken
-      }
-      // mode: "cors",
-      // cache: "default"
-    };
+    // var myOptions = {
+    //   method: "PUT",
+    //   headers: {
+    //     Authorization: "Bearer " + accessToken
+    //   }
+    //   // mode: "cors",
+    //   // cache: "default"
+    // };
 
-    fetch(BASE_URL, myOptions);
+    // fetch(BASE_URL, myOptions);
   };
 }
 

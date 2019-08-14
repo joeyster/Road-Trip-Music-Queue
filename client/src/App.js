@@ -8,7 +8,7 @@ import LogIn from "./components/LogIn";
 function App() {
   return (
     <div>
-      <SearchBar />
+      {/* <SearchBar /> */}
       {/* {create_playlist_list()} */}
       <LogIn />
     </div>
