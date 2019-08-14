@@ -6,49 +6,47 @@ let client_secret = "9dabb10eca184b89bce885069db5f4e2"; // Your secret
 let redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
 
 class LogIn extends Component {
-  state = {};
+  constructor() {
+    super();
+    const params = this.getHashParams();
+    const token = params.access_token;
+    this.state = {
+      logged_in: token ? true : false
+    };
+  }
+
+  getHashParams() {
+    var hashParams = {};
+    var e,
+      r = /([^&;=]+)=?([^&;]*)/g,
+      q = window.location.hash.substring(1);
+    e = r.exec(q);
+    while (e) {
+      hashParams[e[1]] = decodeURIComponent(e[2]);
+      e = r.exec(q);
+    }
+    return hashParams;
+  }
+
   render() {
     return (
       <div className="col- 4 text-center">
         <button className="btn btn-primary" onClick={this.authorization}>
           Log In
         </button>
+        {console.log("state: ", this.state.logged_in)}
+        {this.state.logged_in && (
+          <button onClick={() => this.getNowPlaying()}>
+            Check Now Playing
+          </button>
+        )}
       </div>
     );
   }
 
-  generateRandomString = length => {
-    var text = "";
-    var possible =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  };
-
   authorization = () => {
-    let state = this.generateRandomString(16);
-    let scope = "user-read-private user-read-email";
-    const BASE_URL =
-      "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        response_type: "code",
-        client_id: client_id,
-        scope: scope,
-        redirect_uri: redirect_uri,
-        state: state
-      });
-    console.log(BASE_URL);
-
-    fetch(BASE_URL)
-      .then(response => {
-        console.log(response);
-      })
-      .then(json => {
-        console.log(json);
-      });
+    console.log("clicked");
+    document.location.href = "http://localhost:8888";
   };
 }
 

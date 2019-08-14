@@ -31,8 +31,6 @@ class SearchBar extends Component {
 
   search = () => {
     const BASE_URL = "https://api.spotify.com/v1/me/player/pause";
-    const FETCH_URL =
-      BASE_URL + "q=" + "michael jackson" + "&type=artist&limit=1";
 
     var myOptions = {
       method: "PUT",
