@@ -1,21 +1,18 @@
 import React, { Component } from "react";
-import querystring from "querystring";
-
-let client_id = "19427a009053421cad910c10b315a050"; // Your client id
-let client_secret = "9dabb10eca184b89bce885069db5f4e2"; // Your secret
-let redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
+import fs from "fs";
 
 class LogIn extends Component {
   constructor() {
     super();
     const params = this.getHashParams();
     const token = params.access_token;
+    console.log("token: ", token);
     this.state = {
       logged_in: token ? true : false
     };
   }
 
-  getHashParams() {
+  getHashParams = () => {
     var hashParams = {};
     var e,
       r = /([^&;=]+)=?([^&;]*)/g,
@@ -26,36 +23,42 @@ class LogIn extends Component {
       e = r.exec(q);
     }
     return hashParams;
-  }
+  };
 
   render() {
-    return (
-      <div>
-        <br />
-        <br />
-        <br />
-        <br />
+    if (this.state.logged_in) {
+      return (
         <div className="col- 4 text-center">
-          <button className="btn btn-primary" onClick={this.authorization}>
-            Pilot
-          </button>
-          {/* {this.state.logged_in && (
-            <button onClick={() => this.getNowPlaying()}>
-              Check Now Playing
+          <br />
+          <br />
+          <h1>Your code:</h1>
+          <p>{this.token}</p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <div className="col- 4 text-center">
+            <button className="btn btn-primary" onClick={this.authorization}>
+              Pilot
             </button>
-          )} */}
+          </div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <div className="col- 4 text-center">
+            <button className="btn btn-primary" onClick={this.authorization}>
+              Passenger
+            </button>
+          </div>
         </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <div className="col- 4 text-center">
-          <button className="btn btn-primary" onClick={this.authorization}>
-            Passenger
-          </button>
-        </div>
-      </div>
-    );
+      );
+    }
   }
 
   authorization = () => {

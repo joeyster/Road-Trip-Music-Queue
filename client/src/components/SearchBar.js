@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import fetch from "node-fetch";
 
-// let client_id = "19427a009053421cad910c10b315a050"; // Your client id
-// let client_secret = "9dabb10eca184b89bce885069db5f4e2"; // Your secret
-// let redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
 let accessToken =
-  "BQA57_XfmH7YPCd0F4p6Olw9oJbxi7glSDF9wZErHDBOWywVm4VM8z-v7ft6H54jumiuKRWq4GFXMC3Ay4XM_ZRcN7vyQv2H1nI-fYGXoofue_EFVXmeZI0jFvCqPRKI4MAjRO6F5qynF1fib844Pr3hmeXZ6v2rCIQsacrbUOVaLEgz5KUDqvakgBESzRNrwA";
+  // "BQByU6q2tXGM3uicw01SFry8SzeiNZZXAd9LA4Fv0KAZtt_2k0-BhWDkWC5jAI0_9GSpo-J7kpM7LUY0QAFYJ9fDc3x-o9pG8DUQpV1i9p-LXOLYiNpeVqTrmi2hsv-yrLTaDqi8rw-nQ8zY842HNBybN1kO9RQhFaXu9EP3a-USyxNvnb_UYU--PSYLug";
+  "BQBXPotUpSN-U9STK54HWvOXK3C0tLobG3FBaV78rnESm6UawNyzoEw63xpa6UMQxi6yoIzMADlWVNCW4Pp6iSqGzbE1VY1h840oe5R9mzWYXqmAUOVVKPMVppeDoMMAUeeU0RsiIRbjIx8Jqdex-IipZZMKdtmBP6n0z8G4Q7s2f8Cxvk7D9nULLvPHwfteJg";
 
 class SearchBar extends Component {
   state = {};
@@ -30,18 +28,18 @@ class SearchBar extends Component {
 
   search = () => {
     console.log("hey");
-    // const BASE_URL = "https://api.spotify.com/v1/me/player/pause";
+    const BASE_URL = "https://api.spotify.com/v1/me/player/pause";
 
-    // var myOptions = {
-    //   method: "PUT",
-    //   headers: {
-    //     Authorization: "Bearer " + accessToken
-    //   }
-    //   // mode: "cors",
-    //   // cache: "default"
-    // };
+    var myOptions = {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + accessToken
+      }
+      // mode: "cors",
+      // cache: "default"
+    };
 
-    // fetch(BASE_URL, myOptions);
+    fetch(BASE_URL, myOptions);
   };
 }
 
