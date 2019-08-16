@@ -92,7 +92,7 @@ app.get("/callback", function(req, res) {
       if (!error && response.statusCode === 200) {
         let access_token = body.access_token,
           refresh_token = body.refresh_token;
-        generate_room_code(access_token);
+        let room_code = generate_room_code(access_token);
 
         let options = {
           url: "https://api.spotify.com/v1/me",
@@ -104,11 +104,11 @@ app.get("/callback", function(req, res) {
         request.get(options, function(error, response, body) {
           // console.log(body);
         });
-
         // we can also pass the token to the browser to make requests from there
         res.redirect(
           "http://localhost:3000/#" +
             querystring.stringify({
+              room_code: room_code,
               access_token: access_token,
               refresh_token: refresh_token
             })
@@ -152,8 +152,20 @@ app.get("/refresh_token", function(req, res) {
   });
 });
 
+app.use("/api", express.static("api"), function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  console.log("~~~~~ /api ~~~~~");
+  let data = fs.readFileSync(
+    "auth-server/authorization_code/data/data.json",
+    "utf-8"
+  );
+  console.log("data:", data);
+  // let jsondata = JSON.parse(data);
+  // console.log(jsondata["lSOf"]);
+  res.json(data);
+});
+
 generate_room_code = token => {
-  console.log("inside the function");
   let result = "";
   let obj = {};
   let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -161,9 +173,16 @@ generate_room_code = token => {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   obj[result] = token;
-  console.log(JSON.stringify(obj));
+
+  write_to_json_file(obj);
+
+  return result;
+};
+
+//write {room_code: token} into file
+write_to_json_file = obj => {
   fs.writeFile(
-    "client/src/components/data/data.json",
+    "auth-server/authorization_code/data/data.json",
     JSON.stringify(obj),
     err => {
       if (err) {

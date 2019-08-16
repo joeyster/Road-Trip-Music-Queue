@@ -1,13 +1,16 @@
 import React, { Component } from "react";
-import fs from "fs";
+import axios from "axios";
+// import fetch from "node-fetch";
+import Song from "./Song.js";
 
 class LogIn extends Component {
   constructor() {
     super();
     const params = this.getHashParams();
     const token = params.access_token;
-    console.log("token: ", token);
     this.state = {
+      room_code: params.room_code,
+      token: params.access_token,
       logged_in: token ? true : false
     };
   }
@@ -25,19 +28,33 @@ class LogIn extends Component {
     return hashParams;
   };
 
+  get_data = () => {
+    let url = new URL("http://localhost:8888/api");
+    console.log(url);
+    fetch(url, { method: "GET" })
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        console.log("fetched json: ", json);
+      });
+  };
+
   render() {
     if (this.state.logged_in) {
+      this.get_data();
       return (
         <div className="col- 4 text-center">
           <br />
           <br />
           <h1>Your code:</h1>
-          <p>{this.token}</p>
+          <h5>{this.state.room_code}</h5>
         </div>
       );
     } else {
       return (
         <div>
+          <Song />
           <br />
           <br />
           <br />
@@ -61,9 +78,14 @@ class LogIn extends Component {
     }
   }
 
+  //takes pilot to authorization page to get access token and room code to give out
   authorization = () => {
-    console.log("clicked");
     document.location.href = "http://localhost:8888";
+  };
+
+  //takes passengers to page to enter passcode
+  middle_room = () => {
+    this.setState();
   };
 }
 
