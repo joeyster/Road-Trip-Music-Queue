@@ -5,14 +5,13 @@ class RoomCode extends Component {
   state = {
     success_code: false
   };
+
   render() {
     if (this.state.success_code) {
       return <Remote access_token={this.state.access_token} />;
     } else {
       return (
         <div className="col- 4 text-center">
-          <br />
-          <br />
           <br />
           <br />
           <br />
@@ -31,10 +30,10 @@ class RoomCode extends Component {
             <div className="col-3 pl-2">
               <button
                 id="login_btn"
-                className="btn btn-block btn-dark"
+                className="btn btn-block btn-dark text-center"
                 onClick={this.check_code}
               >
-                Enter
+                Go!
               </button>
             </div>
           </div>

@@ -37,14 +37,20 @@ class LogIn extends Component {
           <br />
           <br />
           <h1>Your code:</h1>
-          <h5>{this.state.room_code}</h5>
+          <h5 class="text-danger">{this.state.room_code}</h5>
+          <br />
+          <br />
+          <h5>
+            Open up <strong>Spotify</strong>
+            <br />
+            <br />
+            Start playing <strong>Queue</strong> playlist
+          </h5>
         </div>
       );
     } else {
       return (
         <div>
-          <br />
-          <br />
           <br />
           <br />
           <br />
