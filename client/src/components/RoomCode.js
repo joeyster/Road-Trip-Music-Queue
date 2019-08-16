@@ -45,7 +45,6 @@ class RoomCode extends Component {
   check_code = () => {
     let code = document.getElementById("code_form").value;
     let url = new URL("http://localhost:8888/api");
-    console.log(url);
     fetch(url, { method: "GET" })
       .then(response => {
         return response.json();

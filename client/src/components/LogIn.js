@@ -37,7 +37,7 @@ class LogIn extends Component {
           <br />
           <br />
           <h1>Your code:</h1>
-          <h5 class="text-danger">{this.state.room_code}</h5>
+          <h5 className="text-danger">{this.state.room_code}</h5>
           <br />
           <br />
           <h5>
@@ -83,9 +83,7 @@ class LogIn extends Component {
 
   //takes passengers to page to enter passcode
   middle_room = () => {
-    this.setState({ passenger: true }, () => {
-      console.log(this.state);
-    });
+    this.setState({ passenger: true });
   };
 }
 

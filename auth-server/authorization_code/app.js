@@ -43,7 +43,10 @@ app.get("/login", function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  let scope = "user-read-private user-read-email user-modify-playback-state";
+  //user-modify-playback-state => play/pause/next/prev
+  //playlist-modify-public => create playlist
+  //playlist-modify-private => create playlist
+  let scope = "user-read-private user-read-email user-modify-playback-state ";
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
@@ -104,6 +107,7 @@ app.get("/callback", function(req, res) {
         request.get(options, function(error, response, body) {
           // console.log(body);
         });
+
         // we can also pass the token to the browser to make requests from there
         res.redirect(
           "http://localhost:3000/#" +
@@ -166,7 +170,7 @@ app.use("/api", express.static("api"), function(req, res) {
 generate_room_code = token => {
   let result = "";
   let obj = {};
-  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (let i = 0; i < 4; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }

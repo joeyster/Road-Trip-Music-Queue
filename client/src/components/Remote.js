@@ -7,9 +7,13 @@ ReactDOM.render(<MenuBar />, document.getElementById("footer"));
 
 class Remote extends Component {
   // console.log(this.props.access_token);
-  state = {};
+  state = { access_token: this.props.access_token };
   render() {
-    return <SearchBar />;
+    return (
+      <div>
+        <SearchBar access_token={this.state.access_token} />
+      </div>
+    );
   }
 }
 
