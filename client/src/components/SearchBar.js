@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import fetch from "node-fetch";
 
 let accessToken =
-  // "BQByU6q2tXGM3uicw01SFry8SzeiNZZXAd9LA4Fv0KAZtt_2k0-BhWDkWC5jAI0_9GSpo-J7kpM7LUY0QAFYJ9fDc3x-o9pG8DUQpV1i9p-LXOLYiNpeVqTrmi2hsv-yrLTaDqi8rw-nQ8zY842HNBybN1kO9RQhFaXu9EP3a-USyxNvnb_UYU--PSYLug";
-  "BQBXPotUpSN-U9STK54HWvOXK3C0tLobG3FBaV78rnESm6UawNyzoEw63xpa6UMQxi6yoIzMADlWVNCW4Pp6iSqGzbE1VY1h840oe5R9mzWYXqmAUOVVKPMVppeDoMMAUeeU0RsiIRbjIx8Jqdex-IipZZMKdtmBP6n0z8G4Q7s2f8Cxvk7D9nULLvPHwfteJg";
+  "BQC1qZs27yruwa20hYt_iBXEQbkeMNpgC0pA4yEkDf3A7o0Kk19aQ8Wb6s7uVXOgs4sbshFycs2aU-pcjjmUqXf-n4VCA95D4RQRKRLXYpO9vDGe_GqIxUMn5_jISLKNvNvqRQ7bQS1nnQHTNZLOt7kvxY70D_GexY1SBazkeJLFrdaXGjdD0Q3LyA";
 
 class SearchBar extends Component {
   state = {};
@@ -35,8 +34,6 @@ class SearchBar extends Component {
       headers: {
         Authorization: "Bearer " + accessToken
       }
-      // mode: "cors",
-      // cache: "default"
     };
 
     fetch(BASE_URL, myOptions);

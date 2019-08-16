@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
-// import fetch from "node-fetch";
-import Song from "./Song.js";
+import RoomCode from "./RoomCode.js";
 
 class LogIn extends Component {
   constructor() {
@@ -11,7 +9,8 @@ class LogIn extends Component {
     this.state = {
       room_code: params.room_code,
       token: params.access_token,
-      logged_in: token ? true : false
+      logged_in: token ? true : false,
+      passenger: false
     };
   }
 
@@ -28,21 +27,11 @@ class LogIn extends Component {
     return hashParams;
   };
 
-  get_data = () => {
-    let url = new URL("http://localhost:8888/api");
-    console.log(url);
-    fetch(url, { method: "GET" })
-      .then(response => {
-        return response.json();
-      })
-      .then(json => {
-        console.log("fetched json: ", json);
-      });
-  };
-
   render() {
+    if (this.state.passenger) {
+      return <RoomCode />;
+    }
     if (this.state.logged_in) {
-      this.get_data();
       return (
         <div className="col- 4 text-center">
           <br />
@@ -54,7 +43,9 @@ class LogIn extends Component {
     } else {
       return (
         <div>
-          <Song />
+          <br />
+          <br />
+          <br />
           <br />
           <br />
           <br />
@@ -68,8 +59,9 @@ class LogIn extends Component {
           <br />
           <br />
           <br />
+          <br />
           <div className="col- 4 text-center">
-            <button className="btn btn-primary" onClick={this.authorization}>
+            <button className="btn btn-primary" onClick={this.middle_room}>
               Passenger
             </button>
           </div>
@@ -85,7 +77,9 @@ class LogIn extends Component {
 
   //takes passengers to page to enter passcode
   middle_room = () => {
-    this.setState();
+    this.setState({ passenger: true }, () => {
+      console.log(this.state);
+    });
   };
 }
 

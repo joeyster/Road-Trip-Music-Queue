@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.css";
-import Playlist from "./components/Playlist";
 import LogIn from "./components/LogIn";
 
 function App() {

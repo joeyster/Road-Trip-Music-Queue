@@ -154,12 +154,10 @@ app.get("/refresh_token", function(req, res) {
 
 app.use("/api", express.static("api"), function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  console.log("~~~~~ /api ~~~~~");
   let data = fs.readFileSync(
     "auth-server/authorization_code/data/data.json",
     "utf-8"
   );
-  console.log("data:", data);
   // let jsondata = JSON.parse(data);
   // console.log(jsondata["lSOf"]);
   res.json(data);
