@@ -27,19 +27,7 @@ class SearchBar extends Component {
             className="btn btn-block btn-dark"
             onClick={this.search}
           >
-            <img src="./search_icon.png" alt="search" width="18" length="18" />
-          </button>
-        </div>
-        <br />
-        <br />
-        <br />
-        <div>
-          <button
-            id="play_btn"
-            className="btn btn-block btn-dark"
-            onClick={this.play}
-          >
-            Play
+            +
           </button>
         </div>
       </div>
@@ -65,37 +53,24 @@ class SearchBar extends Component {
         .then(response => response.json())
         .then(json => {
           console.log(json);
-          console.log(json.tracks.items[0].id);
+          if (json.tracks.items[0] !== undefined) {
+            this.play(json.tracks.items[0].id);
+          }
         });
     }
   };
 
-  play = () => {
-    // let query = document.getElementById("search_bar").value;
-    // let BASE_URL = "https://api.spotify.com/v1/me/player/play?";
-    // let FETCH_URL =
-    //   BASE_URL + "context_uri=spotify=album=5ht7ItJgpBH7W6vJ5BqpPr";
-
-    // var myOptions = {
-    //   method: "PUT",
-    //   headers: {
-    //     // context_uri: "spotify:album:1Je1IMUlBXcx1Fz0WE7oPT",
-    //     Authorization: "Bearer " + this.state.access_token
-    //   },
-    //   mode: "cors",
-    //   cache: "default"
-    // };
-
-    // fetch(FETCH_URL, myOptions);
-
+  play = song_request => {
     spotifyApi.play({
-      context_uri: "spotify:album:5ht7ItJgpBH7W6vJ5BqpPr",
-      offset: {
-        position: 5
-      },
-      position_ms: 0
+      // uris: ["spotify:track:" + song_request]
+      uris: [
+        "spotify:track:0TK2YIli7K1leLovkQiNik",
+        "spotify:track:1ea97AUSazu2QZw9BnHJqK"
+      ]
     });
   };
 }
 
+//1ea97AUSazu2QZw9BnHJqK -- gucci gucci
+//0TK2YIli7K1leLovkQiNik --senorita
 export default SearchBar;

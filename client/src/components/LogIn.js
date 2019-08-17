@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import RoomCode from "./RoomCode.js";
+import Timer from "./Timer.js";
 
 class LogIn extends Component {
   constructor() {
@@ -39,12 +40,14 @@ class LogIn extends Component {
           <h1>Your code:</h1>
           <h5 className="text-danger">{this.state.room_code}</h5>
           <br />
+          <Timer />
+          <br />
           <br />
           <h5>
             Open up <strong>Spotify</strong>
             <br />
             <br />
-            Start playing <strong>Queue</strong> playlist
+            Start playing
           </h5>
         </div>
       );
