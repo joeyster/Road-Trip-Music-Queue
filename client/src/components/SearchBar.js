@@ -72,6 +72,20 @@ class SearchBar extends Component {
     //   queue: this.state.queue.push("hello")
     // });
     // console.dir("state queue: ", this.state.queue);
+    let url = new URL("http://localhost:8888/add_queue");
+    let data = { answer: "42" };
+    fetch(url, {
+      method: "POST",
+      mode: "no-cors", // no-cors, cors, *same-origin
+      headers: {
+        "Content-Type": "application/json"
+        // "Content-Type": "application/x-www-form-urlencoded"
+        // "Access-Control-Allow-Origin": "http://localhost:8888/add_queue"
+      },
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    }).then(response => {
+      console.log("hey");
+    });
   };
 
   play = song_request => {
@@ -82,6 +96,24 @@ class SearchBar extends Component {
         "spotify:track:1ea97AUSazu2QZw9BnHJqK"
       ]
     });
+  };
+
+  check_code = () => {
+    let code = document.getElementById("code_form").value;
+    let url = new URL("http://localhost:8888/api");
+    fetch(url, { method: "GET" })
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        json = JSON.parse(json);
+        let access_token = json[code];
+        if (access_token) {
+          this.setState({ success_code: true, access_token: access_token });
+        } else {
+          console.log("dne");
+        }
+      });
   };
 }
 
