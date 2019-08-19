@@ -1,14 +1,18 @@
 import React, { Component } from "react";
 import fetch from "node-fetch";
-
 import SpotifyWebApi from "spotify-web-api-js";
 const spotifyApi = new SpotifyWebApi();
+
+//two uses of spotify API called for practice and knowledge
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
     console.log(this.props.access_token);
-    this.state = { access_token: this.props.access_token };
+    this.state = {
+      access_token: this.props.access_token,
+      queue: ["joey", "liao"]
+    };
     spotifyApi.setAccessToken(this.state.access_token);
   }
   render() {
@@ -54,15 +58,25 @@ class SearchBar extends Component {
         .then(json => {
           console.log(json);
           if (json.tracks.items[0] !== undefined) {
-            this.play(json.tracks.items[0].id);
+            this.queue_up(json.tracks.items[0].uri);
           }
         });
     }
   };
 
+  queue_up = song_request => {
+    // console.log("song_request: ", song_request);
+    // console.log("typeof song_request: ", typeof song_request);
+    // this.setState({
+    //   access_token: this.props.access_token,
+    //   queue: this.state.queue.push("hello")
+    // });
+    // console.dir("state queue: ", this.state.queue);
+  };
+
   play = song_request => {
     spotifyApi.play({
-      // uris: ["spotify:track:" + song_request]
+      // uris: [song_request]
       uris: [
         "spotify:track:0TK2YIli7K1leLovkQiNik",
         "spotify:track:1ea97AUSazu2QZw9BnHJqK"

@@ -17,10 +17,6 @@ class Timer extends Component {
     this.interval = setInterval(() => this.tick(), 1000);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
   render() {
     if (this.state.time === 0) {
       return <h3>Code expired. Please get a new code.</h3>;
