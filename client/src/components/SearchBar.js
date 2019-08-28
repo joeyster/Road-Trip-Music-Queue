@@ -76,7 +76,7 @@ class SearchBar extends Component {
     let data = { answer: "42" };
     fetch(url, {
       method: "POST",
-      mode: "no-cors", // no-cors, cors, *same-origin
+      mode: "cors", // no-cors, cors, *same-origin
       headers: {
         "Content-Type": "application/json"
         // "Content-Type": "application/x-www-form-urlencoded"

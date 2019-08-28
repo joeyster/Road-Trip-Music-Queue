@@ -157,10 +157,25 @@ app.get("/api", function(req, res) {
   res.json(data);
 });
 
-app.post("/add_queue", function(req, res) {
+app.options("/add_queue", function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   console.log(typeof req.body);
   console.log(JSON.stringify(req.body));
+  res.status(200).end();
+  // let jsondata = JSON.parse(req.body);
+  // console.log(jsondata[]);
+  // res.end(JSON.stringify(req.body));
+});
 
+app.post("/add_queue", function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  console.log(typeof req.body);
+  console.log(JSON.stringify(req.body));
+  res.status(200).end();
   // let jsondata = JSON.parse(req.body);
   // console.log(jsondata[]);
   // res.end(JSON.stringify(req.body));
