@@ -8,7 +8,7 @@ const spotifyApi = new SpotifyWebApi();
 class SearchBar extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.access_token);
+    // console.log(this.props.access_token);
     this.state = {
       access_token: this.props.access_token,
       queue: ["joey", "liao"]
@@ -27,7 +27,7 @@ class SearchBar extends Component {
         </div>
         <div className="col-2 pl-2">
           <button
-            id="login_btn"
+            id="search_btn"
             className="btn btn-block btn-dark"
             onClick={this.search}
           >
@@ -56,15 +56,21 @@ class SearchBar extends Component {
       fetch(FETCH_URL, myOptions)
         .then(response => response.json())
         .then(json => {
-          console.log(json);
+          console.log("json: ", json);
           if (json.tracks.items[0] !== undefined) {
-            this.queue_up(json.tracks.items[0].uri);
+            console.log(`play(${json.tracks.items[0].uri})`);
+            this.play(json.tracks.items[0].uri);
+          } else {
+            console.log("track undefined");
           }
         });
     }
   };
 
+  play_test = song_request => {};
+
   queue_up = song_request => {
+    console.log("queue_up");
     // console.log("song_request: ", song_request);
     // console.log("typeof song_request: ", typeof song_request);
     // this.setState({
@@ -83,12 +89,11 @@ class SearchBar extends Component {
         // "Access-Control-Allow-Origin": "http://localhost:8888/add_queue"
       },
       body: JSON.stringify(data) // body data type must match "Content-Type" header
-    }).then(response => {
-      console.log("hey");
-    });
+    }).then(response => {});
   };
 
   play = song_request => {
+    console.log(`song_request: {song_request}`);
     spotifyApi.play({
       // uris: [song_request]
       uris: [

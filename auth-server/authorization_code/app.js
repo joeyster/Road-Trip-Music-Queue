@@ -7,6 +7,10 @@
  * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
  */
 
+/* How to use:
+    node app.js 
+*/
+
 let express = require("express"); // Express web server framework
 let request = require("request"); // "Request" library
 let querystring = require("querystring");
@@ -96,6 +100,7 @@ app.get("/callback", function(req, res) {
 
     request.post(authOptions, function(error, response, body) {
       if (!error && response.statusCode === 200) {
+        //modify data.json
         let access_token = body.access_token,
           refresh_token = body.refresh_token;
         let room_code = generate_room_code(access_token);
@@ -150,10 +155,7 @@ app.get("/refresh_token", function(req, res) {
 
 app.get("/api", function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  let data = fs.readFileSync(
-    "auth-server/authorization_code/data/data.json",
-    "utf-8"
-  );
+  let data = fs.readFileSync("data/data.json", "utf-8");
   res.json(data);
 });
 
@@ -181,7 +183,9 @@ app.post("/add_queue", function(req, res) {
   // res.end(JSON.stringify(req.body));
 });
 
+//modify json file
 generate_room_code = token => {
+  console.log("generate_room_code");
   let result = "";
   let obj = {};
   let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -197,15 +201,12 @@ generate_room_code = token => {
 
 //write {room_code: token} into file
 write_to_json_file = obj => {
-  fs.writeFile(
-    "auth-server/authorization_code/data/data.json",
-    JSON.stringify(obj),
-    err => {
-      if (err) {
-        console.log(err);
-      }
+  console.log("write_to_json_file");
+  fs.writeFile("data/data.json", JSON.stringify(obj), err => {
+    if (err) {
+      console.log(err);
     }
-  );
+  });
 };
 
 console.log("Listening on 8888");

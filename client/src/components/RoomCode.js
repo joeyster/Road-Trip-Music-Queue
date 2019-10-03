@@ -3,11 +3,11 @@ import Remote from "./Remote.js";
 
 class RoomCode extends Component {
   state = {
-    success_code: false
+    successful_code: false
   };
 
   render() {
-    if (this.state.success_code) {
+    if (this.state.successful_code) {
       return <Remote access_token={this.state.access_token} />;
     } else {
       return (
@@ -53,7 +53,7 @@ class RoomCode extends Component {
         json = JSON.parse(json);
         let access_token = json[code];
         if (access_token) {
-          this.setState({ success_code: true, access_token: access_token });
+          this.setState({ successful_code: true, access_token: access_token });
         } else {
           console.log("dne");
         }
