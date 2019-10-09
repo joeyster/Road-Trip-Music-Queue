@@ -101,6 +101,7 @@ app.get("/callback", function(req, res) {
     request.post(authOptions, function(error, response, body) {
       if (!error && response.statusCode === 200) {
         //modify data.json
+        //when you modify data.json, we need to make sure the path is correct, relative to where you "node PATH"
         let access_token = body.access_token,
           refresh_token = body.refresh_token;
         let room_code = generate_room_code(access_token);

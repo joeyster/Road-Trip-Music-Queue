@@ -30,9 +30,11 @@ class LogIn extends Component {
 
   render() {
     if (this.state.passenger) {
+      // Re-render happens after updating state with setState()
       return <RoomCode />;
     }
     if (this.state.logged_in) {
+      // user has logged in
       return (
         <div className="col- 4 text-center">
           <br />
@@ -52,6 +54,7 @@ class LogIn extends Component {
         </div>
       );
     } else {
+      // user has not logged in yet. AKA first initial view
       return (
         <div>
           <br />
@@ -79,12 +82,13 @@ class LogIn extends Component {
     }
   }
 
-  //takes pilot to authorization page to get access token and room code to give out
+  // takes pilot to authorization page to get access token and room code to give out
   authorization = () => {
     document.location.href = "http://localhost:8888";
   };
 
-  //takes passengers to page to enter passcode
+  // takes passengers to page to enter passcode
+  // Updation: because of updation in the lifecycle, changes to props or state will start an update
   middle_room = () => {
     this.setState({ passenger: true });
   };

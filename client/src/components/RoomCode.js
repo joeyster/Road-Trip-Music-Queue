@@ -8,6 +8,7 @@ class RoomCode extends Component {
 
   render() {
     if (this.state.successful_code) {
+      // access granted. takes user to search/queue up songs
       return <Remote access_token={this.state.access_token} />;
     } else {
       return (
@@ -42,6 +43,7 @@ class RoomCode extends Component {
     }
   }
 
+  //  make sure the code matches in JSON file
   check_code = () => {
     let code = document.getElementById("code_form").value;
     let url = new URL("http://localhost:8888/api");
