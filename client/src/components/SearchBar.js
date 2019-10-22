@@ -76,18 +76,21 @@ class SearchBar extends Component {
       this.user_id = response["id"];
       let playlist_id = "";
       spotifyApi.getUserPlaylists(this.user_id).then(response => {
+        let playlist_index = this.index_getter(response["items"]);
         //if playlist exists
-        if (response["items"][0]["name"] === "wavester.io") {
-          playlist_id = response["items"][0]["id"];
+        if (playlist_index !== -1) {
+          playlist_id = response["items"][playlist_index]["id"];
           spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
         } else {
-          //if playlist doesnt exist, create playlist and add
+          //if playlist doesnt exist, create playlist, add, and play
           let options = { name: "wavester.io" };
           spotifyApi.createPlaylist(this.user_id, options, callback => {
-            console.log("playlist made");
+            // create playlist
             spotifyApi.getUserPlaylists(this.user_id).then(response => {
-              console.log("playlist_id: ");
-              playlist_id = response["items"][0]["id"];
+              console.log(response);
+              // get new playlist
+              playlist_index = this.index_getter(response["items"]);
+              playlist_id = response["items"][playlist_index]["id"];
               spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
             });
           });
@@ -96,8 +99,18 @@ class SearchBar extends Component {
     });
   };
 
-  add_to_playlist = (playlist_id, song_request) => {
-    spotifyApi.addTracksToPlaylist(playlist_id, [song_request]);
+  index_getter = items => {
+    // gets the index of playlist with name as "wavester.io"
+    // POSSIBLE PROBLEM: if playlist list too long, js might move on without a proper index
+    let index = 0;
+    let num;
+    for (num in items) {
+      if (items[num]["name"] === "wavester.io") {
+        return index;
+      }
+      index += 1;
+    }
+    return -1; // DNE
   };
 
   // below, queue_up(), is really good for learning
