@@ -40,7 +40,7 @@ let stateKey = "spotify_auth_state";
 
 let app = express();
 
-//need to use it
+//need to use it for json to be used
 app.use(bodyParser.json());
 
 app.use(express.static(__dirname + "/public")).use(cookieParser());
@@ -53,7 +53,8 @@ app.get("/login", function(req, res) {
   //user-modify-playback-state => play/pause/next/prev
   //playlist-modify-public => create playlist
   //playlist-modify-private => create playlist
-  let scope = "user-read-private user-read-email user-modify-playback-state ";
+  let scope =
+    "user-read-private user-read-email user-modify-playback-state playlist-modify-public playlist-modify-private";
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
@@ -100,8 +101,8 @@ app.get("/callback", function(req, res) {
 
     request.post(authOptions, function(error, response, body) {
       if (!error && response.statusCode === 200) {
-        //modify data.json
-        //when you modify data.json, we need to make sure the path is correct, relative to where you "node PATH"
+        // modify data.json
+        // when you modify data.json, we need to make sure the path is correct, relative to where you "node PATH"
         let access_token = body.access_token,
           refresh_token = body.refresh_token;
         let room_code = generate_room_code(access_token);
@@ -164,29 +165,18 @@ app.options("/add_queue", function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  console.log(typeof req.body);
-  console.log(JSON.stringify(req.body));
   res.status(200).end();
-  // let jsondata = JSON.parse(req.body);
-  // console.log(jsondata[]);
-  // res.end(JSON.stringify(req.body));
 });
 
 app.post("/add_queue", function(req, res) {
+  // need to setHeader again because sending back to 3000
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  console.log(typeof req.body);
   console.log(JSON.stringify(req.body));
   res.status(200).end();
-  // let jsondata = JSON.parse(req.body);
-  // console.log(jsondata[]);
-  // res.end(JSON.stringify(req.body));
 });
 
 //modify json file
 generate_room_code = token => {
-  console.log("generate_room_code");
   let result = "";
   let obj = {};
   let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -202,7 +192,6 @@ generate_room_code = token => {
 
 //write {room_code: token} into file
 write_to_json_file = obj => {
-  console.log("write_to_json_file");
   fs.writeFile("data/data.json", JSON.stringify(obj), err => {
     if (err) {
       console.log(err);

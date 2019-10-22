@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SearchBar from "./SearchBar.js";
+// import MenuBar from "./MenuBar.js";
 
 class Remote extends Component {
   // console.log(this.props.access_token);

@@ -3,15 +3,16 @@ import fetch from "node-fetch";
 import SpotifyWebApi from "spotify-web-api-js";
 const spotifyApi = new SpotifyWebApi();
 
-//two uses of spotify API called for practice and knowledge
+// two uses of spotify API called for practice and knowledge
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
     // console.log(this.props.access_token);
+    this.user_id = "";
     this.state = {
       access_token: this.props.access_token,
-      queue: ["joey", "liao"]
+      queue: ["song1", "song2"]
     };
     spotifyApi.setAccessToken(this.state.access_token);
   }
@@ -43,7 +44,6 @@ class SearchBar extends Component {
     if (query !== "") {
       let BASE_URL = "https://api.spotify.com/v1/search?";
       let FETCH_URL = BASE_URL + "q=" + query + "&type=track&limit=1";
-
       var myOptions = {
         method: "GET",
         headers: {
@@ -53,13 +53,15 @@ class SearchBar extends Component {
         cache: "default"
       };
 
+      // queue up into .json song is if found
       fetch(FETCH_URL, myOptions)
         .then(response => response.json())
         .then(json => {
-          console.log("json: ", json);
           if (json.tracks.items[0] !== undefined) {
-            console.log(`play(${json.tracks.items[0].uri})`);
-            this.play(json.tracks.items[0].uri);
+            console.log(`queuing up ${json.tracks.items[0].uri}`);
+            // this.queue_up(json.tracks.items[0].uri);
+            this.queue_process();
+            // this.add_to_playlist();
           } else {
             console.log("track undefined");
           }
@@ -67,17 +69,8 @@ class SearchBar extends Component {
     }
   };
 
-  play_test = song_request => {};
-
   queue_up = song_request => {
     console.log("queue_up");
-    // console.log("song_request: ", song_request);
-    // console.log("typeof song_request: ", typeof song_request);
-    // this.setState({
-    //   access_token: this.props.access_token,
-    //   queue: this.state.queue.push("hello")
-    // });
-    // console.dir("state queue: ", this.state.queue);
     let url = new URL("http://localhost:8888/add_queue");
     let data = { answer: "42" };
     fetch(url, {
@@ -85,15 +78,13 @@ class SearchBar extends Component {
       mode: "cors", // no-cors, cors, *same-origin
       headers: {
         "Content-Type": "application/json"
-        // "Content-Type": "application/x-www-form-urlencoded"
-        // "Access-Control-Allow-Origin": "http://localhost:8888/add_queue"
       },
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     }).then(response => {});
   };
 
+  // only for testing purposes. show how to use .play()
   play = song_request => {
-    console.log(`song_request: {song_request}`);
     spotifyApi.play({
       // uris: [song_request]
       uris: [
@@ -103,22 +94,23 @@ class SearchBar extends Component {
     });
   };
 
-  check_code = () => {
-    let code = document.getElementById("code_form").value;
-    let url = new URL("http://localhost:8888/api");
-    fetch(url, { method: "GET" })
-      .then(response => {
-        return response.json();
-      })
-      .then(json => {
-        json = JSON.parse(json);
-        let access_token = json[code];
-        if (access_token) {
-          this.setState({ success_code: true, access_token: access_token });
-        } else {
-          console.log("dne");
-        }
+  queue_process = () => {
+    spotifyApi.getMe().then(response => {
+      this.user_id = response["id"];
+      let options = { name: "wavester.io" };
+      console.log("user_id: ", this.user_id);
+      spotifyApi.createPlaylist(this.user_id, options, callback => {
+        this.add_to_playlist(this.user_id);
       });
+    });
+  };
+
+  add_to_playlist = () => {
+    spotifyApi.getUserPlaylists(this.user_id).then(response => {
+      console.log("response: ", response);
+      console.log("items: ", response["items"]);
+      console.log("items[0]: ", response["items"][0]);
+    });
   };
 }
 
