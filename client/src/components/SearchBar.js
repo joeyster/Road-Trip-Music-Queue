@@ -41,7 +41,9 @@ class SearchBar extends Component {
 
   search = () => {
     let query = document.getElementById("search_bar").value;
+    // check for non-empty field
     if (query !== "") {
+      // searching for song
       let BASE_URL = "https://api.spotify.com/v1/search?";
       let FETCH_URL = BASE_URL + "q=" + query + "&type=track&limit=1";
       var myOptions = {
@@ -53,15 +55,14 @@ class SearchBar extends Component {
         cache: "default"
       };
 
-      // queue up into .json song is if found
+      // attempt to queue up song with restful API call
       fetch(FETCH_URL, myOptions)
         .then(response => response.json())
         .then(json => {
+          // found
           if (json.tracks.items[0] !== undefined) {
-            console.log(`queuing up ${json.tracks.items[0].uri}`);
-            // this.queue_up(json.tracks.items[0].uri);
-            this.queue_process();
-            // this.add_to_playlist();
+            let song_uri = json.tracks.items[0].uri;
+            this.queue_process(song_uri); // start queuing process
           } else {
             console.log("track undefined");
           }
@@ -69,6 +70,38 @@ class SearchBar extends Component {
     }
   };
 
+  queue_process = song_request => {
+    console.log("song_request: ", song_request);
+    spotifyApi.getMe().then(response => {
+      this.user_id = response["id"];
+      let playlist_id = "";
+      spotifyApi.getUserPlaylists(this.user_id).then(response => {
+        //if playlist exists
+        if (response["items"][0]["name"] === "wavester.io") {
+          playlist_id = response["items"][0]["id"];
+          spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
+        } else {
+          //if playlist doesnt exist, create playlist and add
+          let options = { name: "wavester.io" };
+          spotifyApi.createPlaylist(this.user_id, options, callback => {
+            console.log("playlist made");
+            spotifyApi.getUserPlaylists(this.user_id).then(response => {
+              console.log("playlist_id: ");
+              playlist_id = response["items"][0]["id"];
+              spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
+            });
+          });
+        }
+      });
+    });
+  };
+
+  add_to_playlist = (playlist_id, song_request) => {
+    spotifyApi.addTracksToPlaylist(playlist_id, [song_request]);
+  };
+
+  // below, queue_up(), is really good for learning
+  // POST api call
   queue_up = song_request => {
     console.log("queue_up");
     let url = new URL("http://localhost:8888/add_queue");
@@ -82,38 +115,5 @@ class SearchBar extends Component {
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     }).then(response => {});
   };
-
-  // only for testing purposes. show how to use .play()
-  play = song_request => {
-    spotifyApi.play({
-      // uris: [song_request]
-      uris: [
-        "spotify:track:0TK2YIli7K1leLovkQiNik",
-        "spotify:track:1ea97AUSazu2QZw9BnHJqK"
-      ]
-    });
-  };
-
-  queue_process = () => {
-    spotifyApi.getMe().then(response => {
-      this.user_id = response["id"];
-      let options = { name: "wavester.io" };
-      console.log("user_id: ", this.user_id);
-      spotifyApi.createPlaylist(this.user_id, options, callback => {
-        this.add_to_playlist(this.user_id);
-      });
-    });
-  };
-
-  add_to_playlist = () => {
-    spotifyApi.getUserPlaylists(this.user_id).then(response => {
-      console.log("response: ", response);
-      console.log("items: ", response["items"]);
-      console.log("items[0]: ", response["items"][0]);
-    });
-  };
 }
-
-//1ea97AUSazu2QZw9BnHJqK -- gucci gucci
-//0TK2YIli7K1leLovkQiNik --senorita
 export default SearchBar;
