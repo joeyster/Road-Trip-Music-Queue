@@ -11,8 +11,7 @@ class SearchBar extends Component {
     // console.log(this.props.access_token);
     this.user_id = "";
     this.state = {
-      access_token: this.props.access_token,
-      queue: ["song1", "song2"]
+      access_token: this.props.access_token
     };
     spotifyApi.setAccessToken(this.state.access_token);
   }
@@ -71,7 +70,6 @@ class SearchBar extends Component {
   };
 
   queue_process = song_request => {
-    console.log("song_request: ", song_request);
     spotifyApi.getMe().then(response => {
       this.user_id = response["id"];
       let playlist_id = "";
@@ -91,6 +89,7 @@ class SearchBar extends Component {
               // get new playlist
               playlist_index = this.index_getter(response["items"]);
               playlist_id = response["items"][playlist_index]["id"];
+              //add the song
               spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
             });
           });

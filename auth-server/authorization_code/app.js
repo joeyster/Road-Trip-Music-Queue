@@ -94,7 +94,7 @@ app.get("/callback", function(req, res) {
       headers: {
         Authorization:
           "Basic " +
-          new Buffer(client_id + ":" + client_secret).toString("base64")
+          Buffer.from(client_id + ":" + client_secret).toString("base64")
       },
       json: true
     };
@@ -136,7 +136,7 @@ app.get("/refresh_token", function(req, res) {
     headers: {
       Authorization:
         "Basic " +
-        new Buffer(client_id + ":" + client_secret).toString("base64")
+        Buffer.from(client_id + ":" + client_secret).toString("base64")
     },
     form: {
       grant_type: "refresh_token",
@@ -191,12 +191,23 @@ generate_room_code = token => {
 };
 
 //write {room_code: token} into file
-write_to_json_file = obj => {
-  fs.writeFile("data/data.json", JSON.stringify(obj), err => {
-    if (err) {
-      console.log(err);
-    }
-  });
+write_to_json_file = entry => {
+  console.log("entry: ", entry);
+  fs.readFile(
+    // get json
+    "data/data.json",
+    (callback = (err, data) => {
+      console.log("data: ", data.toString());
+      obj = JSON.parse(data);
+      new_obj = { ...obj, ...entry };
+      console.log("new_obj: ", new_obj);
+      fs.writeFile("data/data.json", JSON.stringify(new_obj), err => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    })
+  );
 };
 
 console.log("Listening on 8888");

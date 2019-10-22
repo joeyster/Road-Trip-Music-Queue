@@ -3,13 +3,16 @@ import Remote from "./Remote.js";
 
 class RoomCode extends Component {
   state = {
-    successful_code: false
+    successful_code: false,
+    code: null
   };
 
   render() {
     if (this.state.successful_code) {
       // access granted. takes user to search/queue up songs
-      return <Remote access_token={this.state.access_token} />;
+      return (
+        <Remote access_token={this.state.access_token} code={this.state.code} />
+      );
     } else {
       return (
         <div className="col- 4 text-center">
@@ -55,7 +58,11 @@ class RoomCode extends Component {
         json = JSON.parse(json);
         let access_token = json[code];
         if (access_token) {
-          this.setState({ successful_code: true, access_token: access_token });
+          this.setState({
+            successful_code: true,
+            access_token: access_token,
+            code: code
+          });
         } else {
           console.log("dne");
         }

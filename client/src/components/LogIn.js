@@ -49,7 +49,7 @@ class LogIn extends Component {
             Open up <strong>Spotify</strong>
             <br />
             <br />
-            Start playing
+            Start playing playlist "wavester.io"
           </h5>
         </div>
       );
