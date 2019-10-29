@@ -175,23 +175,26 @@ app.post("/add_queue", function(req, res) {
   res.status(200).end();
 });
 
-//modify json file
+//modify json file with
 generate_room_code = token => {
-  let result = "";
+  let room_code = "";
   let obj = {};
-  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  // let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let characters = "abcdefghijklmnopqrstuvwxyz";
   for (let i = 0; i < 4; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
+    room_code += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
   }
-  obj[result] = token;
+  obj[room_code] = token;
 
-  write_to_json_file(obj);
+  append_to_json_file(obj);
 
-  return result;
+  return room_code;
 };
 
-//write {room_code: token} into file
-write_to_json_file = entry => {
+//append {room_code: token} into file
+append_to_json_file = entry => {
   console.log("entry: ", entry);
   fs.readFile(
     // get json

@@ -33,7 +33,6 @@ class RoomCode extends Component {
             </div>
             <div className="col-3 pl-2">
               <button
-                id="login_btn"
                 className="btn btn-block btn-dark text-center"
                 onClick={this.check_code}
               >
