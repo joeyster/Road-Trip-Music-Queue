@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import RoomCode from "./RoomCode.js";
 import Timer from "./Timer.js";
+import SpotifyWebApi from "spotify-web-api-js";
+const spotifyApi = new SpotifyWebApi();
 
 class LogIn extends Component {
   constructor() {
@@ -13,6 +15,8 @@ class LogIn extends Component {
       logged_in: token ? true : false,
       passenger: false
     };
+    console.log("this.state.token: ", this.state.token);
+    spotifyApi.setAccessToken(this.state.token);
   }
 
   getHashParams = () => {
@@ -37,6 +41,7 @@ class LogIn extends Component {
       // user has logged in
       return (
         <div className="col- 4 text-center">
+          {this.create_playlist()}
           <br />
           <br />
           <h1>Your code:</h1>
@@ -48,8 +53,11 @@ class LogIn extends Component {
           <h5>
             Open up <strong>Spotify</strong>
             <br />
+            Have someone queue up a song first
             <br />
             Start playing playlist "wavester.io"
+            <br />
+            If the playlist doesn't show up, give it a few seconds.
           </h5>
         </div>
       );
@@ -82,14 +90,47 @@ class LogIn extends Component {
     }
   }
 
-  // takes pilot to authorization page to get access token and room code to give out
+  // creates wavester.io playlist
+  create_playlist = () => {
+    spotifyApi.getMe().then(response => {
+      this.user_id = response["id"];
+      spotifyApi.getUserPlaylists(this.user_id).then(response => {
+        let playlist_index = this.index_getter(response["items"]);
+        //if playlist exists
+        if (playlist_index === -1) {
+          spotifyApi.getMe().then(response => {
+            this.user_id = response["id"];
+            console.log("user_id: ", this.user_id);
+            let options = { name: "wavester.io" };
+            spotifyApi.createPlaylist(this.user_id, options);
+          });
+        }
+      });
+    });
+  };
+
+  index_getter = items => {
+    // gets the index of playlist with name as "wavester.io"
+    // POSSIBLE PROBLEM: if playlist list too long, js might move on without a proper index
+    let index = 0;
+    let num;
+    for (num in items) {
+      if (items[num]["name"] === "wavester.io") {
+        return index;
+      }
+      index += 1;
+    }
+    return -1; // DNE
+  };
+
   authorization = () => {
+    // takes pilot to authorization page to get access token and room code to give out
     document.location.href = "http://localhost:8888";
   };
 
-  // takes passengers to page to enter passcode
-  // Updation: because of updation in the lifecycle, changes to props or state will start an update
   middle_room = () => {
+    // takes passengers to page to enter passcode
+    // Updation: because of updation in the lifecycle, changes to props or state will start an update
     this.setState({ passenger: true });
   };
 }

@@ -75,25 +75,8 @@ class SearchBar extends Component {
       let playlist_id = "";
       spotifyApi.getUserPlaylists(this.user_id).then(response => {
         let playlist_index = this.index_getter(response["items"]);
-        //if playlist exists
-        if (playlist_index !== -1) {
-          playlist_id = response["items"][playlist_index]["id"];
-          spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
-        } else {
-          //if playlist doesnt exist, create playlist, add, and play
-          let options = { name: "wavester.io" };
-          spotifyApi.createPlaylist(this.user_id, options, callback => {
-            // create playlist
-            spotifyApi.getUserPlaylists(this.user_id).then(response => {
-              console.log(response);
-              // get new playlist
-              playlist_index = this.index_getter(response["items"]);
-              playlist_id = response["items"][playlist_index]["id"];
-              //add the song
-              spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
-            });
-          });
-        }
+        playlist_id = response["items"][playlist_index]["id"];
+        spotifyApi.addTracksToPlaylist(playlist_id, [song_request]); // add to playlist
       });
     });
   };
