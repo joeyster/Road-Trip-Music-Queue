@@ -171,7 +171,6 @@ app.options("/add_queue", function(req, res) {
 app.post("/add_queue", function(req, res) {
   // need to setHeader again because sending back to 3000
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  console.log(JSON.stringify(req.body));
   res.status(200).end();
 });
 
@@ -195,15 +194,12 @@ generate_room_code = token => {
 
 //append {room_code: token} into file
 append_to_json_file = entry => {
-  console.log("entry: ", entry);
   fs.readFile(
     // get json
     "data/data.json",
     (callback = (err, data) => {
-      console.log("data: ", data.toString());
       obj = JSON.parse(data);
       new_obj = { ...obj, ...entry };
-      console.log("new_obj: ", new_obj);
       fs.writeFile("data/data.json", JSON.stringify(new_obj), err => {
         if (err) {
           console.log(err);

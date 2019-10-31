@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import fetch from "node-fetch";
 import SpotifyWebApi from "spotify-web-api-js";
+import Song from "./Song.js";
 const spotifyApi = new SpotifyWebApi();
 
 // two uses of spotify API called for practice and knowledge
@@ -11,31 +12,82 @@ class SearchBar extends Component {
     // console.log(this.props.access_token);
     this.user_id = "";
     this.state = {
-      access_token: this.props.access_token
+      access_token: this.props.access_token,
+      search_array: []
     };
     spotifyApi.setAccessToken(this.state.access_token);
   }
   render() {
-    return (
-      <div className="row m-2">
-        <div className="col-10 pr-0">
-          <input
-            id="search_bar"
-            className="form-control"
-            placeholder="Search songs"
+    //if empty array
+    // console.log(this.state.search_array);
+    if (this.state.search_array.length === 0) {
+      return (
+        <div className="row m-2">
+          <div className="col-10 pr-0">
+            <input
+              id="search_bar"
+              className="form-control"
+              placeholder="Search songs"
+            />
+          </div>
+          <div className="col-2 pl-2">
+            <button
+              id="search_btn"
+              className="btn btn-block btn-dark"
+              onClick={this.search}
+            >
+              +
+            </button>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="row m-2">
+          <div className="col-10 pr-0">
+            <input
+              id="search_bar"
+              className="form-control"
+              placeholder="Search songs"
+            />
+          </div>
+          <div className="col-2 pl-2">
+            <button
+              id="search_btn"
+              className="btn btn-block btn-dark"
+              onClick={this.search}
+            >
+              +
+            </button>
+          </div>
+          <Song
+            uri={this.state.search_array[0].uri}
+            name={this.state.search_array[0].name}
+            artist={this.state.search_array[0].artists[0].name}
+          />
+          <Song
+            uri={this.state.search_array[1].uri}
+            name={this.state.search_array[1].name}
+            artist={this.state.search_array[1].artists[0].name}
+          />
+          <Song
+            uri={this.state.search_array[2].uri}
+            name={this.state.search_array[2].name}
+            artist={this.state.search_array[2].artists[0].name}
+          />
+          <Song
+            uri={this.state.search_array[3].uri}
+            name={this.state.search_array[3].name}
+            artist={this.state.search_array[3].artists[0].name}
+          />
+          <Song
+            uri={this.state.search_array[4].uri}
+            name={this.state.search_array[4].name}
+            artist={this.state.search_array[4].artists[0].name}
           />
         </div>
-        <div className="col-2 pl-2">
-          <button
-            id="search_btn"
-            className="btn btn-block btn-dark"
-            onClick={this.search}
-          >
-            +
-          </button>
-        </div>
-      </div>
-    );
+      );
+    }
   }
 
   search = () => {
@@ -44,7 +96,7 @@ class SearchBar extends Component {
     if (query !== "") {
       // searching for song
       let BASE_URL = "https://api.spotify.com/v1/search?";
-      let FETCH_URL = BASE_URL + "q=" + query + "&type=track&limit=1";
+      let FETCH_URL = BASE_URL + "q=" + query + "&type=track&limit=5";
       var myOptions = {
         method: "GET",
         headers: {
@@ -61,7 +113,11 @@ class SearchBar extends Component {
           // found
           if (json.tracks.items[0] !== undefined) {
             let song_uri = json.tracks.items[0].uri;
-            this.queue_process(song_uri); // start queuing process
+            console.log(json);
+            this.setState({ search_array: json.tracks.items });
+            console.log("this.state.search_array: ", this.state.search_array);
+
+            // this.queue_process(song_uri); // start queuing process
           } else {
             console.log("track undefined");
           }
@@ -99,7 +155,7 @@ class SearchBar extends Component {
   // POST api call
   queue_up = song_request => {
     console.log("queue_up");
-    let url = new URL("http://localhost:8888/add_queue");
+    let url = new URL("http://192.168.1.114:8888/add_queue");
     let data = { answer: "42" };
     fetch(url, {
       method: "POST",

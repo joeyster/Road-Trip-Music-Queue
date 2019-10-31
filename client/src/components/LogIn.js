@@ -90,13 +90,13 @@ class LogIn extends Component {
     }
   }
 
-  // creates wavester.io playlist
   create_playlist = () => {
+    // creates wavester.io playlist
     spotifyApi.getMe().then(response => {
       this.user_id = response["id"];
       spotifyApi.getUserPlaylists(this.user_id).then(response => {
         let playlist_index = this.index_getter(response["items"]);
-        //if playlist exists
+        //if playlist doesn't exists
         if (playlist_index === -1) {
           spotifyApi.getMe().then(response => {
             this.user_id = response["id"];
