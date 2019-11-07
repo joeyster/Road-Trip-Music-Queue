@@ -8,29 +8,17 @@ class LogIn extends Component {
   constructor() {
     super();
     const params = this.getHashParams();
-    const token = params.access_token;
+    const room_code = params.room_code;
+    // const token = params.access_token;
     this.state = {
       room_code: params.room_code,
-      token: params.access_token,
-      logged_in: token ? true : false,
+      // token: params.access_token,
+      logged_in: room_code ? true : false,
       passenger: false
     };
-    console.log("this.state.token: ", this.state.token);
-    spotifyApi.setAccessToken(this.state.token);
+    // console.log("this.state.token: ", this.state.token);
+    // spotifyApi.setAccessToken(this.state.token);
   }
-
-  getHashParams = () => {
-    var hashParams = {};
-    var e,
-      r = /([^&;=]+)=?([^&;]*)/g,
-      q = window.location.hash.substring(1);
-    e = r.exec(q);
-    while (e) {
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-      e = r.exec(q);
-    }
-    return hashParams;
-  };
 
   render() {
     if (this.state.passenger) {
@@ -91,36 +79,33 @@ class LogIn extends Component {
   }
 
   create_playlist = () => {
-    // creates wavester.io playlist
-    spotifyApi.getMe().then(response => {
-      this.user_id = response["id"];
-      spotifyApi.getUserPlaylists(this.user_id).then(response => {
-        let playlist_index = this.index_getter(response["items"]);
-        //if playlist doesn't exists
-        if (playlist_index === -1) {
-          spotifyApi.getMe().then(response => {
-            this.user_id = response["id"];
-            console.log("user_id: ", this.user_id);
-            let options = { name: "wavester.io" };
-            spotifyApi.createPlaylist(this.user_id, options);
-          });
-        }
-      });
-    });
-  };
+    let url = "http://localhost:8888/create_playlist";
+    let options = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ room_code: this.state.room_code })
+    };
+    fetch(url, options);
 
-  index_getter = items => {
-    // gets the index of playlist with name as "wavester.io"
-    // POSSIBLE PROBLEM: if playlist list too long, js might move on without a proper index
-    let index = 0;
-    let num;
-    for (num in items) {
-      if (items[num]["name"] === "wavester.io") {
-        return index;
-      }
-      index += 1;
-    }
-    return -1; // DNE
+    // // creates wavester.io playlist
+    // spotifyApi.getMe().then(response => {
+    //   this.user_id = response["id"];
+    //   spotifyApi.getUserPlaylists(this.user_id).then(response => {
+    //     let playlist_index = this.index_getter(response["items"]);
+    //     //if playlist doesn't exists
+    //     if (playlist_index === -1) {
+    //       spotifyApi.getMe().then(response => {
+    //         this.user_id = response["id"];
+    //         console.log("user_id: ", this.user_id);
+    //         let options = { name: "wavester.io" };
+    //         spotifyApi.createPlaylist(this.user_id, options);
+    //       });
+    //     }
+    //   });
+    // });
   };
 
   authorization = () => {
@@ -132,6 +117,20 @@ class LogIn extends Component {
     // takes passengers to page to enter passcode
     // Updation: because of updation in the lifecycle, changes to props or state will start an update
     this.setState({ passenger: true });
+  };
+
+  getHashParams = () => {
+    // hash param = the params given through url
+    var hashParams = {};
+    var e,
+      r = /([^&;=]+)=?([^&;]*)/g,
+      q = window.location.hash.substring(1);
+    e = r.exec(q);
+    while (e) {
+      hashParams[e[1]] = decodeURIComponent(e[2]);
+      e = r.exec(q);
+    }
+    return hashParams;
   };
 }
 

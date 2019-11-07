@@ -60,31 +60,6 @@ class SearchBar extends Component {
               +
             </button>
           </div>
-          <Song
-            uri={this.state.search_array[0].uri}
-            name={this.state.search_array[0].name}
-            artist={this.state.search_array[0].artists[0].name}
-          />
-          <Song
-            uri={this.state.search_array[1].uri}
-            name={this.state.search_array[1].name}
-            artist={this.state.search_array[1].artists[0].name}
-          />
-          <Song
-            uri={this.state.search_array[2].uri}
-            name={this.state.search_array[2].name}
-            artist={this.state.search_array[2].artists[0].name}
-          />
-          <Song
-            uri={this.state.search_array[3].uri}
-            name={this.state.search_array[3].name}
-            artist={this.state.search_array[3].artists[0].name}
-          />
-          <Song
-            uri={this.state.search_array[4].uri}
-            name={this.state.search_array[4].name}
-            artist={this.state.search_array[4].artists[0].name}
-          />
         </div>
       );
     }
@@ -155,7 +130,7 @@ class SearchBar extends Component {
   // POST api call
   queue_up = song_request => {
     console.log("queue_up");
-    let url = new URL("http://192.168.1.114:8888/add_queue");
+    let url = new URL("http://localhost:8888/add_queue");
     let data = { answer: "42" };
     fetch(url, {
       method: "POST",
