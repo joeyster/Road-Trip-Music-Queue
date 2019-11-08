@@ -178,9 +178,7 @@ app.options("/create_playlist", function(req, res) {
 
 app.post("/create_playlist", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  console.log("HEYO ITS YO BOY");
   let room_code = req.body["room_code"];
-  console.log("room code:", room_code);
   create_playlist(room_code);
   res.status(200).end();
 });
@@ -203,30 +201,23 @@ generate_room_code = token => {
   return room_code;
 };
 
-create_playlist = passed_room_code => {
-  spotifyApi.setAccessToken(
-    "BQD34pSmPLZ2zSRp1QunKzyX6bGZqJLR6hGG-DPi8Vdmmx8PzdKYg4nZvn2oCwkgkoCjkupcrNKCBLuQle8nDvrR5307Y2RWynljUjtMGeaDSx9lhHxV-5QTB767pQICT0cZzQt6PPDaMxJ5Tm2jVj_j5xZEoxK6IC9IoTvcUyLc7Pk0duH5W1K1XxjLykY0PxoFhVANs0MKyfHk_kXlPD6rm7oKpU6CkhuhgWeskw-dEDzvRltZ"
-  );
+create_playlist = async passed_room_code => {
+  let access_token = await get_acccess_token(passed_room_code);
+
+  spotifyApi.setAccessToken(access_token);
   // creates wavester.io playlist
   spotifyApi.getMe().then(response => {
     let user_id = response["body"]["id"];
-    console.log("1: ", user_id);
     spotifyApi.getUserPlaylists(user_id).then(response => {
       let playlist_index = index_getter(response["body"]["items"]);
-      // console.log(response["body"]["items"][0]);
       //if playlist doesn't exists
       if (playlist_index === -1) {
         spotifyApi.getMe().then(response => {
           user_id = response["body"]["id"];
-          console.log("2: ", user_id);
-          //       let options = { name: "wavester.io" };
-          //       spotifyApi.createPlaylist(user_id, options);
-          //       console.log("created");
           spotifyApi
             .createPlaylist(user_id, "wavester.io", { public: true })
             .then(
               function(data) {
-                console.log(data);
                 console.log("Created playlist!");
               },
               function(err) {
@@ -234,29 +225,31 @@ create_playlist = passed_room_code => {
               }
             );
         });
+      } else {
+        console.log("Already exists");
       }
     });
   });
 };
 
 get_acccess_token = passed_room_code => {
-  fs.readFile(
-    // get json
-    "data/data.json",
-    (callback = (err, data) => {
-      obj = JSON.parse(data);
-      console.log(`access_token: ${obj[passed_room_code]}`);
-      return obj[passed_room_code];
-      if (err) {
-        console.log(err);
-      }
-    })
-  );
+  // reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+  return new Promise(resolve => {
+    fs.readFile(
+      // get json
+      "data/data.json",
+      (callback = (err, data) => {
+        obj = JSON.parse(data);
+        resolve(obj[passed_room_code]);
+      })
+    );
+  });
 };
 
 index_getter = items => {
   // gets the index of playlist with name as "wavester.io"
   // POSSIBLE PROBLEM: if playlist list too long, js might move on without a proper index
+  // FIX: understand promises
   let index = 0;
   let num;
   for (num in items) {

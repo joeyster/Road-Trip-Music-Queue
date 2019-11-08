@@ -89,7 +89,6 @@ class LogIn extends Component {
       body: JSON.stringify({ room_code: this.state.room_code })
     };
     fetch(url, options);
-
     // // creates wavester.io playlist
     // spotifyApi.getMe().then(response => {
     //   this.user_id = response["id"];
