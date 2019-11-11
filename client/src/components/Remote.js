@@ -31,18 +31,16 @@ class Remote extends Component {
             get_song_array={this.set_array}
           />
           <br />
-          <div id="songs">
-            {this.state.song_array.map(song => (
-              <div>
-                <Song
-                  room_code={this.state.room_code}
-                  uri={song.uri}
-                  name={song.name}
-                  artist={song.artists[0].name}
-                />
-              </div>
-            ))}
-          </div>
+          {this.state.song_array.map(song => (
+            <div key={song.id}>
+              <Song
+                room_code={this.state.room_code}
+                uri={song.uri}
+                name={song.name}
+                artist={song.artists[0].name}
+              />
+            </div>
+          ))}
         </div>
       );
     }

@@ -8,18 +8,6 @@ class Song extends Component {
     artist: this.props.artist
   };
 
-  componentDidUpdate(prevProps) {
-    //function called upon updation
-    //needed because updation did not change the props in the UI
-    if (this.props.uri !== prevProps.uri) {
-      this.setState({
-        uri: this.props.uri,
-        name: this.props.name,
-        artist: this.props.artist
-      });
-    }
-  }
-
   render() {
     return (
       <div className="row m-2">
