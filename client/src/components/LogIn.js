@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import RoomCode from "./RoomCode.js";
 import Timer from "./Timer.js";
-import SpotifyWebApi from "spotify-web-api-js";
-const spotifyApi = new SpotifyWebApi();
 
 class LogIn extends Component {
   constructor() {
@@ -35,17 +33,15 @@ class LogIn extends Component {
           <h1>Your code:</h1>
           <h5 className="text-danger">{this.state.room_code}</h5>
           <br />
-          <Timer />
+          <Timer room_code={this.state.room_code} />
           <br />
           <br />
           <h5>
             Open up <strong>Spotify</strong>
             <br />
-            Have someone queue up a song first
+            Have someone queue up a song
             <br />
             Start playing playlist "wavester.io"
-            <br />
-            If the playlist doesn't show up, give it a few seconds.
           </h5>
         </div>
       );
@@ -89,22 +85,6 @@ class LogIn extends Component {
       body: JSON.stringify({ room_code: this.state.room_code })
     };
     fetch(url, options);
-    // // creates wavester.io playlist
-    // spotifyApi.getMe().then(response => {
-    //   this.user_id = response["id"];
-    //   spotifyApi.getUserPlaylists(this.user_id).then(response => {
-    //     let playlist_index = this.index_getter(response["items"]);
-    //     //if playlist doesn't exists
-    //     if (playlist_index === -1) {
-    //       spotifyApi.getMe().then(response => {
-    //         this.user_id = response["id"];
-    //         console.log("user_id: ", this.user_id);
-    //         let options = { name: "wavester.io" };
-    //         spotifyApi.createPlaylist(this.user_id, options);
-    //       });
-    //     }
-    //   });
-    // });
   };
 
   authorization = () => {
@@ -119,7 +99,7 @@ class LogIn extends Component {
   };
 
   getHashParams = () => {
-    // hash param = the params given through url
+    // hash param = the params given through url - ex: #param1=foo
     var hashParams = {};
     var e,
       r = /([^&;=]+)=?([^&;]*)/g,

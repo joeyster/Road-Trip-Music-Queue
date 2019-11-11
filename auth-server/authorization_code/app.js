@@ -17,7 +17,6 @@ let querystring = require("querystring");
 let cookieParser = require("cookie-parser");
 let fs = require("fs");
 let bodyParser = require("body-parser");
-const util = require("util"); // show [object Object]
 
 let SpotifyWebApi = require("spotify-web-api-node"); // Spotify API
 const spotifyApi = new SpotifyWebApi();
@@ -96,14 +95,6 @@ app.get("/callback", function(req, res) {
         let room_code = generate_room_code(access_token);
 
         // we can also pass the token to the browser to make requests from there
-        // res.redirect(
-        //   "http://localhost:3000/#" +
-        //     querystring.stringify({
-        //       room_code: room_code,
-        //       access_token: access_token,
-        //       refresh_token: refresh_token
-        //     })
-        // );
         res.redirect(
           "http://localhost:3000/#" +
             querystring.stringify({
@@ -151,12 +142,58 @@ app.get("/refresh_token", function(req, res) {
 });
 
 app.get("/api", function(req, res) {
+  //deprecated. keep for reference
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   let data = fs.readFileSync("data/data.json", "utf-8");
   res.json(data);
 });
 
+app.options("/check_code", function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.status(200).end();
+});
+
+app.post("/check_code", function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  let file_data = fs.readFileSync("data/data.json", "utf-8");
+  file_data = JSON.parse(file_data);
+  let room_code = req.body["message"];
+
+  let diff = file_data[room_code]["expire_time"] - Date.now();
+  console.log(diff / 1000 / 60 + " minutes left");
+
+  // if room code exists inside json file
+  if (
+    file_data[room_code] === undefined ||
+    Date.now() > file_data[room_code]["expire_time"]
+  ) {
+    res.json({ message: "dne" });
+  } else {
+    res.json({ message: "exists" });
+  }
+});
+
+app.options("/time_left", function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.status(200).end();
+});
+
+app.post("/time_left", function(req, res) {
+  //respond with expire_time
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  let file_data = fs.readFileSync("data/data.json", "utf-8");
+  file_data = JSON.parse(file_data);
+  let room_code = req.body["message"];
+  let expire_time = file_data[room_code]["expire_time"];
+  res.json({ message: expire_time });
+});
+
 app.options("/add_queue", function(req, res) {
+  //deprecated. keep for reference
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -164,6 +201,7 @@ app.options("/add_queue", function(req, res) {
 });
 
 app.post("/add_queue", function(req, res) {
+  //deprecated. keep for reference
   // need to setHeader again because sending back to 3000
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.status(200).end();
@@ -183,53 +221,39 @@ app.post("/create_playlist", (req, res) => {
   res.status(200).end();
 });
 
-//modify json file with
-generate_room_code = token => {
-  let room_code = "";
-  let obj = {};
-  // let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let characters = "abcdefghijklmnopqrstuvwxyz";
-  for (let i = 0; i < 4; i++) {
-    room_code += characters.charAt(
-      Math.floor(Math.random() * characters.length)
-    );
-  }
-  obj[room_code] = token;
-
-  append_to_json_file(obj);
-
-  return room_code;
-};
-
 create_playlist = async passed_room_code => {
   let access_token = await get_acccess_token(passed_room_code);
-
   spotifyApi.setAccessToken(access_token);
   // creates wavester.io playlist
-  spotifyApi.getMe().then(response => {
-    let user_id = response["body"]["id"];
-    spotifyApi.getUserPlaylists(user_id).then(response => {
-      let playlist_index = index_getter(response["body"]["items"]);
-      //if playlist doesn't exists
-      if (playlist_index === -1) {
-        spotifyApi.getMe().then(response => {
-          user_id = response["body"]["id"];
-          spotifyApi
-            .createPlaylist(user_id, "wavester.io", { public: true })
-            .then(
-              function(data) {
-                console.log("Created playlist!");
-              },
-              function(err) {
-                console.log("Something went wrong!", err);
-              }
-            );
-        });
-      } else {
-        console.log("Already exists");
-      }
+  spotifyApi
+    .getMe()
+    .then(response => {
+      let user_id = response["body"]["id"];
+      spotifyApi.getUserPlaylists(user_id).then(response => {
+        let playlist_index = index_getter(response["body"]["items"]);
+        //if playlist doesn't exists
+        if (playlist_index === -1) {
+          spotifyApi.getMe().then(response => {
+            user_id = response["body"]["id"];
+            spotifyApi
+              .createPlaylist(user_id, "wavester.io", { public: true })
+              .then(
+                function(data) {
+                  console.log("Created playlist");
+                },
+                function(err) {
+                  console.log("Something went wrong!", err);
+                }
+              );
+          });
+        } else {
+          console.log("Already exists");
+        }
+      });
+    })
+    .catch(err => {
+      console.log("Something went wrong!", err);
     });
-  });
 };
 
 get_acccess_token = passed_room_code => {
@@ -240,7 +264,7 @@ get_acccess_token = passed_room_code => {
       "data/data.json",
       (callback = (err, data) => {
         obj = JSON.parse(data);
-        resolve(obj[passed_room_code]);
+        resolve(obj[passed_room_code]["token"]);
       })
     );
   });
@@ -259,6 +283,29 @@ index_getter = items => {
     index += 1;
   }
   return -1; // DNE
+};
+
+//modify json file with
+generate_room_code = token => {
+  let room_code = "";
+  let obj = {};
+  // let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let characters = "abcdefghijklmnopqrstuvwxyz";
+  for (let i = 0; i < 4; i++) {
+    room_code += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+  }
+  // current timestamp in milliseconds
+  let timestamp = Date.now();
+  // 3600000 ms = 1 hour
+  timestamp = timestamp + 3600000;
+
+  obj[room_code] = { token: token, expire_time: timestamp };
+
+  append_to_json_file(obj);
+
+  return room_code;
 };
 
 //append {room_code: token} into file

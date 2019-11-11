@@ -48,23 +48,42 @@ class RoomCode extends Component {
   //  make sure the code matches in JSON file
   check_code = () => {
     let code = document.getElementById("code_form").value;
-    let url = new URL("http://localhost:8888/api");
-    fetch(url, { method: "GET" })
+    let url = new URL("http://localhost:8888/check_code");
+    let options = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: code })
+    };
+    fetch(url, options)
       .then(response => {
+        console.log(response);
+        console.log(typeof response);
         return response.json();
       })
       .then(json => {
-        json = JSON.parse(json);
-        let access_token = json[code];
-        if (access_token) {
+        console.log("json[message]: ", json["message"]);
+        if (json["message"] === "exists") {
           this.setState({
             successful_code: true,
-            access_token: access_token,
             code: code
           });
         } else {
           console.log("dne");
         }
+        // console.log(json);
+        // let access_token = json[code]["token"];
+        // if (access_token) {
+        //   this.setState({
+        //     successful_code: true,
+        //     access_token: access_token,
+        //     code: code
+        //   });
+        // } else {
+        //   console.log("dne");
+        // }
       });
   };
 }

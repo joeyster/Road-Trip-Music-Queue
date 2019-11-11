@@ -3,9 +3,14 @@
 import React, { Component } from "react";
 
 class Timer extends Component {
-  state = {
-    time: 3600 //token expires in 1 hour
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      time: 3600, //token expires in 1 hour
+      room_code: this.props.room_code
+    };
+    this.get_time_left();
+  }
 
   tick() {
     if (this.state.time > 0) {
@@ -28,6 +33,29 @@ class Timer extends Component {
       );
     }
   }
+
+  get_time_left = () => {
+    console.log("inside func");
+    let url = new URL("http://localhost:8888/time_left");
+    let options = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: this.state.room_code })
+    };
+    fetch(url, options)
+      .then(response => {
+        console.log(response);
+        return response.json();
+      })
+      .then(json => {
+        let expire_time = json["message"];
+        let diff = expire_time - Date.now();
+        this.setState({ time: Math.floor(diff / 1000) });
+      });
+  };
 }
 
 export default Timer;
