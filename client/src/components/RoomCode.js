@@ -76,17 +76,6 @@ class RoomCode extends Component {
         } else {
           console.log("dne");
         }
-        // console.log(json);
-        // let access_token = json[code]["token"];
-        // if (access_token) {
-        //   this.setState({
-        //     successful_code: true,
-        //     access_token: access_token,
-        //     code: code
-        //   });
-        // } else {
-        //   console.log("dne");
-        // }
       });
   };
 }

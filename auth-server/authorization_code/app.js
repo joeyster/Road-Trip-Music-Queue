@@ -229,7 +229,6 @@ app.options("/search", (req, res) => {
 });
 
 app.post("/search", async (req, res) => {
-  console.log("omae wa here");
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   let passed_room_code = req.body["room_code"];
   let access_token = await get_acccess_token(passed_room_code);
@@ -250,6 +249,35 @@ app.post("/search", async (req, res) => {
       }
     });
 });
+
+app.options("/add_song", function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.status(200).end();
+});
+
+app.post("/add_song", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  let room_code = req.body["room_code"];
+  let uri = req.body["uri"];
+  add_to_playlist(room_code, uri);
+  res.status(200).end();
+});
+
+add_to_playlist = async (passed_room_code, uri) => {
+  let access_token = await get_acccess_token(passed_room_code);
+  spotifyApi.setAccessToken(access_token);
+  spotifyApi.getMe().then(response => {
+    let user_id = response["body"]["id"];
+    let playlist_id = "";
+    spotifyApi.getUserPlaylists(user_id).then(response => {
+      let playlist_index = index_getter(response["body"]["items"]);
+      playlist_id = response.body.items[playlist_index].id;
+      spotifyApi.addTracksToPlaylist(playlist_id, [uri]);
+    });
+  });
+};
 
 create_playlist = async passed_room_code => {
   let access_token = await get_acccess_token(passed_room_code);
@@ -277,7 +305,7 @@ create_playlist = async passed_room_code => {
               );
           });
         } else {
-          console.log("Already exists");
+          console.log("Album already exists");
         }
       });
     })

@@ -61,7 +61,6 @@ class SearchBar extends Component {
           return response.json();
         })
         .then(json => {
-          console.log(json.song_array);
           this.props.get_song_array(json.song_array);
         });
     } else {

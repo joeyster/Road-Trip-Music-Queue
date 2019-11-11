@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import SearchBar from "./SearchBar.js";
+import Song from "./Song.js";
 
 class Remote extends Component {
-  // console.log(this.props.access_token);
   constructor(props) {
     super(props);
     this.state = {
@@ -10,26 +10,50 @@ class Remote extends Component {
       song_array: []
     };
   }
+
   render() {
-    return (
-      <div>
-        <SearchBar
-          room_code={this.state.room_code}
-          get_song_array={this.display_array}
-        />
-        <br />
-        <div id="songs"></div>
-        <br />
-        room_code: {this.state.room_code}
-        <br />
-        {/* song_array: {this.state.song_array} */}
-      </div>
-    );
+    if (this.state.song_array.length === 0) {
+      return (
+        <div>
+          <SearchBar
+            room_code={this.state.room_code}
+            get_song_array={this.set_array}
+          />
+          <br />
+          <div id="songs"></div>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <SearchBar
+            room_code={this.state.room_code}
+            get_song_array={this.set_array}
+          />
+          <br />
+          <div id="songs">
+            {this.state.song_array.map(song => (
+              <div>
+                <Song
+                  room_code={this.state.room_code}
+                  uri={song.uri}
+                  name={song.name}
+                  artist={song.artists[0].name}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
   }
-  display_array = child_data => {
-    console.log("callback function");
+
+  display_songs = () => {
+    // document.getElementById("songs").innerHTML;
+  };
+
+  set_array = child_data => {
     this.setState({ song_array: child_data });
-    console.log(this.state.song_array);
   };
 }
 
