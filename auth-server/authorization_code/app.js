@@ -265,6 +265,40 @@ app.post("/add_song", async (req, res) => {
   res.status(200).end();
 });
 
+app.options("/clear_playlist", function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.status(200).end();
+});
+
+app.post("/clear_playlist", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  let room_code = req.body["room_code"];
+  clear_playlist(room_code);
+  res.status(200).end();
+});
+
+clear_playlist = async passed_room_code => {
+  let access_token = await get_acccess_token(passed_room_code);
+  spotifyApi.setAccessToken(access_token);
+  spotifyApi.getMe().then(response => {
+    let user_id = response["body"]["id"];
+    let playlist_id = "";
+    spotifyApi.getUserPlaylists(user_id).then(response => {
+      let playlist_index = index_getter(response["body"]["items"]);
+      playlist_id = response.body.items[playlist_index].id;
+      spotifyApi.getPlaylistTracks(playlist_id).then(response => {
+        let playlist_tracks = response.body.items.map(item => {
+          let obj = { uri: item.track.uri };
+          return obj;
+        });
+        spotifyApi.removeTracksFromPlaylist(playlist_id, playlist_tracks);
+      });
+    });
+  });
+};
+
 add_to_playlist = async (passed_room_code, uri) => {
   let access_token = await get_acccess_token(passed_room_code);
   spotifyApi.setAccessToken(access_token);

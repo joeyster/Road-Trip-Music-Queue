@@ -46,10 +46,6 @@ class Remote extends Component {
     }
   }
 
-  display_songs = () => {
-    // document.getElementById("songs").innerHTML;
-  };
-
   set_array = child_data => {
     this.setState({ song_array: child_data });
   };

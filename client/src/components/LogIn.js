@@ -43,6 +43,13 @@ class LogIn extends Component {
             <br />
             Start playing playlist "wavester.io"
           </h5>
+          <br />
+          <br />
+          <div className="col- 4 text-center">
+            <button className="btn btn-primary" onClick={this.clear_playlist}>
+              Clear playlist
+            </button>
+          </div>
         </div>
       );
     } else {
@@ -73,6 +80,19 @@ class LogIn extends Component {
       );
     }
   }
+
+  clear_playlist = () => {
+    let url = "http://localhost:8888/clear_playlist";
+    let options = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ room_code: this.state.room_code })
+    };
+    fetch(url, options);
+  };
 
   create_playlist = () => {
     let url = "http://localhost:8888/create_playlist";
