@@ -161,8 +161,8 @@ app.post("/check_code", function(req, res) {
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
 
-  let diff = file_data[room_code]["expire_time"] - Date.now();
-  console.log(diff / 1000 / 60 + " minutes left");
+  // let diff = file_data[room_code]["expire_time"] - Date.now();
+  // console.log(diff / 1000 / 60 + " minutes left");
 
   // if room code exists inside json file
   if (
@@ -219,6 +219,36 @@ app.post("/create_playlist", (req, res) => {
   let room_code = req.body["room_code"];
   create_playlist(room_code);
   res.status(200).end();
+});
+
+app.options("/search", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.status(200).end();
+});
+
+app.post("/search", async (req, res) => {
+  console.log("omae wa here");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  let passed_room_code = req.body["room_code"];
+  let access_token = await get_acccess_token(passed_room_code);
+  spotifyApi.setAccessToken(access_token);
+  let query = req.body["search_query"];
+  spotifyApi
+    .searchTracks(query, { type: "track", limit: 5 })
+    .then(response => {
+      return response;
+    })
+    .then(json => {
+      // found
+      if (json.body.tracks.items[0] !== undefined) {
+        console.log({ song_array: json.body.tracks.items });
+        res.json({ song_array: json.body.tracks.items });
+      } else {
+        console.log("track undefined");
+      }
+    });
 });
 
 create_playlist = async passed_room_code => {

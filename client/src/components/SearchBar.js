@@ -4,68 +4,73 @@ import SpotifyWebApi from "spotify-web-api-js";
 import Song from "./Song.js";
 const spotifyApi = new SpotifyWebApi();
 
-// two uses of spotify API called for practice and knowledge
+// two types of spotify API calls for practice and knowledge
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
-    // console.log(this.props.access_token);
     this.user_id = "";
     this.state = {
-      access_token: this.props.access_token,
+      room_code: this.props.room_code,
       search_array: []
     };
     spotifyApi.setAccessToken(this.state.access_token);
   }
+
   render() {
     //if empty array
-    // console.log(this.state.search_array);
-    if (this.state.search_array.length === 0) {
-      return (
-        <div className="row m-2">
-          <div className="col-10 pr-0">
-            <input
-              id="search_bar"
-              className="form-control"
-              placeholder="Search songs"
-            />
-          </div>
-          <div className="col-2 pl-2">
-            <button
-              id="search_btn"
-              className="btn btn-block btn-dark"
-              onClick={this.search}
-            >
-              +
-            </button>
-          </div>
+    return (
+      <div className="row m-2">
+        <div className="col-10 pr-0">
+          <input
+            id="search_bar"
+            className="form-control"
+            placeholder="Search songs"
+          />
         </div>
-      );
-    } else {
-      return (
-        <div className="row m-2">
-          <div className="col-10 pr-0">
-            <input
-              id="search_bar"
-              className="form-control"
-              placeholder="Search songs"
-            />
-          </div>
-          <div className="col-2 pl-2">
-            <button
-              id="search_btn"
-              className="btn btn-block btn-dark"
-              onClick={this.search}
-            >
-              +
-            </button>
-          </div>
+        <div className="col-2 pl-2">
+          <button
+            id="search_btn"
+            className="btn btn-block btn-dark"
+            onClick={this.send_song_array}
+          >
+            +
+          </button>
         </div>
-      );
-    }
+      </div>
+    );
   }
 
-  search = () => {
+  send_song_array = () => {
+    let query = document.getElementById("search_bar").value;
+    if (query !== "") {
+      let url = "http://localhost:8888/search";
+      let options = {
+        method: "POST",
+        mode: "cors", // no-cors, cors, *same-origin
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          room_code: this.state.room_code,
+          search_query: query
+        }) // body data type must match "Content-Type" header
+      };
+      fetch(url, options)
+        .then(response => {
+          return response.json();
+        })
+        .then(json => {
+          console.log(json.song_array);
+          this.props.get_song_array(json.song_array);
+        });
+    } else {
+      console.log("empty search bar");
+    }
+  };
+
+  deprecated_search = () => {
+    // deprecated. keep for reference
     let query = document.getElementById("search_bar").value;
     // check for non-empty field
     if (query !== "") {
@@ -100,7 +105,8 @@ class SearchBar extends Component {
     }
   };
 
-  queue_process = song_request => {
+  deprecated_queue_process = song_request => {
+    // deprecated. keep for reference
     spotifyApi.getMe().then(response => {
       this.user_id = response["id"];
       let playlist_id = "";
@@ -129,6 +135,7 @@ class SearchBar extends Component {
   // below, queue_up(), is really good for learning
   // POST api call
   queue_up = song_request => {
+    // deprecated. keep for reference
     console.log("queue_up");
     let url = new URL("http://localhost:8888/add_queue");
     let data = { answer: "42" };

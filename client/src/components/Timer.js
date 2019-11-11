@@ -35,7 +35,6 @@ class Timer extends Component {
   }
 
   get_time_left = () => {
-    console.log("inside func");
     let url = new URL("http://localhost:8888/time_left");
     let options = {
       method: "POST",
@@ -47,7 +46,6 @@ class Timer extends Component {
     };
     fetch(url, options)
       .then(response => {
-        console.log(response);
         return response.json();
       })
       .then(json => {

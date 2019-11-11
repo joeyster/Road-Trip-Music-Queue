@@ -4,14 +4,17 @@ import Remote from "./Remote.js";
 class RoomCode extends Component {
   state = {
     successful_code: false,
-    code: null
+    room_code: null
   };
 
   render() {
     if (this.state.successful_code) {
       // access granted. takes user to search/queue up songs
       return (
-        <Remote access_token={this.state.access_token} code={this.state.code} />
+        <Remote
+          access_token={this.state.access_token}
+          room_code={this.state.room_code}
+        />
       );
     } else {
       return (
@@ -47,7 +50,7 @@ class RoomCode extends Component {
 
   //  make sure the code matches in JSON file
   check_code = () => {
-    let code = document.getElementById("code_form").value;
+    let room_code = document.getElementById("code_form").value;
     let url = new URL("http://localhost:8888/check_code");
     let options = {
       method: "POST",
@@ -55,7 +58,7 @@ class RoomCode extends Component {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ message: code })
+      body: JSON.stringify({ message: room_code })
     };
     fetch(url, options)
       .then(response => {
@@ -68,7 +71,7 @@ class RoomCode extends Component {
         if (json["message"] === "exists") {
           this.setState({
             successful_code: true,
-            code: code
+            room_code: room_code
           });
         } else {
           console.log("dne");
