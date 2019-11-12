@@ -85,7 +85,7 @@ class LogIn extends Component {
   }
 
   clear_playlist = () => {
-    let url = "http://192.168.1.114:8888/clear_playlist";
+    let url = "http://192.168.1.102:8888/clear_playlist";
     let options = {
       method: "POST",
       mode: "cors",
@@ -98,7 +98,7 @@ class LogIn extends Component {
   };
 
   create_playlist = () => {
-    let url = "http://192.168.1.114:8888/create_playlist";
+    let url = "http://192.168.1.102:8888/create_playlist";
     let options = {
       method: "POST",
       mode: "cors",
@@ -112,7 +112,7 @@ class LogIn extends Component {
 
   authorization = () => {
     // takes pilot to authorization page to get access token and room code to give out
-    document.location.href = "http://192.168.1.114:8888";
+    document.location.href = "http://192.168.1.102:8888";
   };
 
   middle_room = () => {
