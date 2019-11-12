@@ -35,7 +35,7 @@ class Timer extends Component {
   }
 
   get_time_left = () => {
-    let url = new URL("http://localhost:8888/time_left");
+    let url = new URL("http://192.168.1.114:8888/time_left");
     let options = {
       method: "POST",
       mode: "cors",
@@ -52,6 +52,9 @@ class Timer extends Component {
         let expire_time = json["message"];
         let diff = expire_time - Date.now();
         this.setState({ time: Math.floor(diff / 1000) });
+      })
+      .catch(err => {
+        console.log("Something went wrong!", err);
       });
   };
 }

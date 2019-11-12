@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import fetch from "node-fetch";
 import SpotifyWebApi from "spotify-web-api-js";
-import Song from "./Song.js";
 const spotifyApi = new SpotifyWebApi();
 
 // two types of spotify API calls for practice and knowledge
@@ -31,7 +30,7 @@ class SearchBar extends Component {
         <div className="col-2 pl-2">
           <button
             id="search_btn"
-            className="btn btn-block btn-dark"
+            className="btn btn-block btn-dark shadow-none"
             onClick={this.send_song_array}
           >
             +
@@ -44,7 +43,7 @@ class SearchBar extends Component {
   send_song_array = () => {
     let query = document.getElementById("search_bar").value;
     if (query !== "") {
-      let url = "http://localhost:8888/search";
+      let url = "http://192.168.1.114:8888/search";
       let options = {
         method: "POST",
         mode: "cors", // no-cors, cors, *same-origin
@@ -62,6 +61,9 @@ class SearchBar extends Component {
         })
         .then(json => {
           this.props.get_song_array(json.song_array);
+        })
+        .catch(err => {
+          console.log("Something went wrong!", err);
         });
     } else {
       console.log("empty search bar");
@@ -91,11 +93,10 @@ class SearchBar extends Component {
         .then(json => {
           // found
           if (json.tracks.items[0] !== undefined) {
-            let song_uri = json.tracks.items[0].uri;
+            // let song_uri = json.tracks.items[0].uri;
             console.log(json);
             this.setState({ search_array: json.tracks.items });
             console.log("this.state.search_array: ", this.state.search_array);
-
             // this.queue_process(song_uri); // start queuing process
           } else {
             console.log("track undefined");
@@ -136,7 +137,7 @@ class SearchBar extends Component {
   queue_up = song_request => {
     // deprecated. keep for reference
     console.log("queue_up");
-    let url = new URL("http://localhost:8888/add_queue");
+    let url = new URL("http://192.168.1.114:8888/add_queue");
     let data = { answer: "42" };
     fetch(url, {
       method: "POST",

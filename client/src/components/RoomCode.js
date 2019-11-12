@@ -51,7 +51,7 @@ class RoomCode extends Component {
   //  make sure the code matches in JSON file
   check_code = () => {
     let room_code = document.getElementById("code_form").value;
-    let url = new URL("http://localhost:8888/check_code");
+    let url = new URL("http://192.168.1.114:8888/check_code");
     let options = {
       method: "POST",
       mode: "cors",
@@ -62,12 +62,9 @@ class RoomCode extends Component {
     };
     fetch(url, options)
       .then(response => {
-        console.log(response);
-        console.log(typeof response);
         return response.json();
       })
       .then(json => {
-        console.log("json[message]: ", json["message"]);
         if (json["message"] === "exists") {
           this.setState({
             successful_code: true,
@@ -76,6 +73,9 @@ class RoomCode extends Component {
         } else {
           console.log("dne");
         }
+      })
+      .catch(err => {
+        console.log("Something went wrong!", err);
       });
   };
 }
