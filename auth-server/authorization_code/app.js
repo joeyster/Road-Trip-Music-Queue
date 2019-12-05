@@ -23,7 +23,7 @@ const spotifyApi = new SpotifyWebApi();
 
 let client_id = "19427a009053421cad910c10b315a050"; // Your client id
 let client_secret = "9dabb10eca184b89bce885069db5f4e2"; // Your secret
-let redirect_uri = "http://192.168.1.102:8888/callback"; // Or Your redirect uri
+let redirect_uri = "http://192.168.1.99:8888/callback"; // Or Your redirect uri
 
 let stateKey = "spotify_auth_state";
 let app = express();
@@ -96,7 +96,7 @@ app.get("/callback", function(req, res) {
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
-          "http://192.168.1.102:3000/#" +
+          "http://192.168.1.99:3000/#" +
             querystring.stringify({
               room_code: room_code
               // logged_in: "true"
@@ -143,20 +143,20 @@ app.get("/refresh_token", function(req, res) {
 
 app.get("/api", function(req, res) {
   //deprecated. keep for reference
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   let data = fs.readFileSync("data/data.json", "utf-8");
   res.json(data);
 });
 
 app.options("/check_code", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/check_code", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   let file_data = fs.readFileSync("data/data.json", "utf-8");
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
@@ -176,7 +176,7 @@ app.post("/check_code", function(req, res) {
 });
 
 app.options("/time_left", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
@@ -184,7 +184,7 @@ app.options("/time_left", function(req, res) {
 
 app.post("/time_left", function(req, res) {
   //respond with expire_time
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   let file_data = fs.readFileSync("data/data.json", "utf-8");
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
@@ -194,7 +194,7 @@ app.post("/time_left", function(req, res) {
 
 app.options("/add_queue", function(req, res) {
   //deprecated. keep for reference
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
@@ -203,33 +203,33 @@ app.options("/add_queue", function(req, res) {
 app.post("/add_queue", function(req, res) {
   //deprecated. keep for reference
   // need to setHeader again because sending back to 3000
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.status(200).end();
 });
 
 app.options("/create_playlist", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/create_playlist", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   let room_code = req.body["room_code"];
   create_playlist(room_code);
   res.status(200).end();
 });
 
 app.options("/search", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/search", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   let passed_room_code = req.body["room_code"];
   let access_token = await get_acccess_token(passed_room_code);
   spotifyApi.setAccessToken(access_token);
@@ -253,14 +253,14 @@ app.post("/search", async (req, res) => {
 });
 
 app.options("/add_song", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/add_song", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   let room_code = req.body["room_code"];
   let uri = req.body["uri"];
   add_to_playlist(room_code, uri);
@@ -268,14 +268,14 @@ app.post("/add_song", async (req, res) => {
 });
 
 app.options("/clear_playlist", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/clear_playlist", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.102:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.99:3000");
   let room_code = req.body["room_code"];
   clear_playlist(room_code);
   res.status(200).end();
