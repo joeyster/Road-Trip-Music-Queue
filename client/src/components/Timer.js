@@ -35,7 +35,7 @@ class Timer extends Component {
   }
 
   get_time_left = () => {
-    let url = new URL("http://192.168.1.99:8888/time_left");
+    let url = new URL("http://joeyliao.ddns.net:8888/time_left");
     let options = {
       method: "POST",
       mode: "cors",
