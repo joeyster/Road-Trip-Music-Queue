@@ -51,7 +51,7 @@ class RoomCode extends Component {
   //  make sure the code matches in JSON file
   check_code = () => {
     let room_code = document.getElementById("code_form").value;
-    let url = new URL("http://joeyliao.ddns.net:8888/check_code");
+    let url = new URL("http://wavester.io:8888/check_code");
     let options = {
       method: "POST",
       mode: "cors",

@@ -29,7 +29,7 @@ class Song extends Component {
   }
 
   add_song = () => {
-    let url = "http://joeyliao.ddns.net:8888/add_song";
+    let url = "http://wavester.io:8888/add_song";
     let options = {
       method: "POST",
       mode: "cors", // no-cors, cors, *same-origin

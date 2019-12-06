@@ -43,7 +43,7 @@ class SearchBar extends Component {
   send_song_array = () => {
     let query = document.getElementById("search_bar").value;
     if (query !== "") {
-      let url = "http://joeyliao.ddns.net:8888/search";
+      let url = "http://wavester.io:8888/search";
       let options = {
         method: "POST",
         mode: "cors", // no-cors, cors, *same-origin
@@ -137,7 +137,7 @@ class SearchBar extends Component {
   queue_up = song_request => {
     // deprecated. keep for reference
     console.log("queue_up");
-    let url = new URL("http://joeyliao.ddns.net:8888/add_queue");
+    let url = new URL("http://wavester.io:8888/add_queue");
     let data = { answer: "42" };
     fetch(url, {
       method: "POST",
