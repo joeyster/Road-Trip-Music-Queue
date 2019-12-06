@@ -96,7 +96,7 @@ app.get("/callback", function(req, res) {
 
         // we can also pass the token to the browser to make requests from there
         res.redirect(
-          "http://wavester.io:3000/#" +
+          "http://wavester.io/#" +
             querystring.stringify({
               room_code: room_code
               // logged_in: "true"
@@ -149,14 +149,14 @@ app.get("/api", function(req, res) {
 });
 
 app.options("/check_code", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/check_code", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   let file_data = fs.readFileSync("data/data.json", "utf-8");
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
@@ -176,7 +176,7 @@ app.post("/check_code", function(req, res) {
 });
 
 app.options("/time_left", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
@@ -184,7 +184,7 @@ app.options("/time_left", function(req, res) {
 
 app.post("/time_left", function(req, res) {
   //respond with expire_time
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   let file_data = fs.readFileSync("data/data.json", "utf-8");
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
@@ -194,7 +194,7 @@ app.post("/time_left", function(req, res) {
 
 app.options("/add_queue", function(req, res) {
   //deprecated. keep for reference
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
@@ -203,33 +203,33 @@ app.options("/add_queue", function(req, res) {
 app.post("/add_queue", function(req, res) {
   //deprecated. keep for reference
   // need to setHeader again because sending back to 3000
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.status(200).end();
 });
 
 app.options("/create_playlist", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/create_playlist", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   let room_code = req.body["room_code"];
   create_playlist(room_code);
   res.status(200).end();
 });
 
 app.options("/search", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/search", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   let passed_room_code = req.body["room_code"];
   let access_token = await get_acccess_token(passed_room_code);
   spotifyApi.setAccessToken(access_token);
@@ -253,14 +253,14 @@ app.post("/search", async (req, res) => {
 });
 
 app.options("/add_song", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/add_song", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   let room_code = req.body["room_code"];
   let uri = req.body["uri"];
   add_to_playlist(room_code, uri);
@@ -268,14 +268,14 @@ app.post("/add_song", async (req, res) => {
 });
 
 app.options("/clear_playlist", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.status(200).end();
 });
 
 app.post("/clear_playlist", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://wavester.io");
   let room_code = req.body["room_code"];
   clear_playlist(room_code);
   res.status(200).end();
