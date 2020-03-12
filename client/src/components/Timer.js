@@ -35,7 +35,7 @@ class Timer extends Component {
   }
 
   get_time_left = () => {
-    let url = new URL("http://wavester.io:8888/time_left");
+    let url = new URL("http://172.31.98.83:8888/time_left");
     let options = {
       method: "POST",
       mode: "cors",
