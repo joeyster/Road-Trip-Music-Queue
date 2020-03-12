@@ -19,7 +19,7 @@ wavester.io was built with ReactJS and Express, using Javascript as its primary 
 
 ## Set up
 need to download nodejs
-* npm install npm -g
-* npm install create-react-app -g
-* npm install -i to install all dependencies
-  * needs to be in the directory of node_modulescd 
+* `npm install npm -g`
+* `npm install create-react-app -g`
+* `npm install` to install all dependencies
+  * needs to be in the directory where `node_module` is in
