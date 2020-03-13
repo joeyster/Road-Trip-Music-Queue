@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import fetch from "node-fetch";
-import SpotifyWebApi from "spotify-web-api-js";
-const spotifyApi = new SpotifyWebApi();
 
 // two types of spotify API calls for practice and knowledge
 
@@ -13,7 +10,6 @@ class SearchBar extends Component {
       room_code: this.props.room_code,
       search_array: []
     };
-    spotifyApi.setAccessToken(this.state.access_token);
   }
 
   render() {
@@ -70,6 +66,7 @@ class SearchBar extends Component {
     }
   };
 
+  /*
   deprecated_search = () => {
     // deprecated. keep for reference
     let query = document.getElementById("search_bar").value;
@@ -148,5 +145,6 @@ class SearchBar extends Component {
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     }).then(response => {});
   };
+*/
 }
 export default SearchBar;

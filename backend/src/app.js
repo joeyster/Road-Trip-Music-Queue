@@ -14,7 +14,6 @@
 let express = require("express"); // Express web server framework
 let request = require("request"); // "Request" library
 let querystring = require("querystring");
-let cookieParser = require("cookie-parser");
 let fs = require("fs");
 let bodyParser = require("body-parser");
 
@@ -30,11 +29,11 @@ let app = express();
 //need to use it for json to be used
 app.use(bodyParser.json());
 
-app.use(express.static(__dirname + "/public")).use(cookieParser());
+app.use(express.static(__dirname + "/public"));
 
 app.get("/login", function(req, res) {
   let state = generateRandomString(16);
-  res.cookie(stateKey, state);
+  // res.cookie(stateKey, state);
 
   // your application requests authorization
   //user-modify-playback-state => play/pause/next/prev
@@ -59,59 +58,48 @@ app.get("/login", function(req, res) {
 // after checking the state parameter
 app.get("/callback", function(req, res) {
   let code = req.query.code || null;
-  let state = req.query.state || null;
-  let storedState = req.cookies ? req.cookies[stateKey] : null;
 
-  if (state === null || state !== storedState) {
-    res.redirect(
-      "/#" +
-        querystring.stringify({
-          error: "state_mismatch"
-        })
-    );
-  } else {
-    res.clearCookie(stateKey);
-    let authOptions = {
-      url: "https://accounts.spotify.com/api/token",
-      form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: "authorization_code"
-      },
-      headers: {
-        Authorization:
-          "Basic " +
-          Buffer.from(client_id + ":" + client_secret).toString("base64")
-      },
-      json: true
-    };
+  res.clearCookie(stateKey);
+  let authOptions = {
+    url: "https://accounts.spotify.com/api/token",
+    form: {
+      code: code,
+      redirect_uri: redirect_uri,
+      grant_type: "authorization_code"
+    },
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(client_id + ":" + client_secret).toString("base64")
+    },
+    json: true
+  };
 
-    request.post(authOptions, function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        // modify data.json
-        // when you modify data.json, we need to make sure the path is correct, relative to where you "node PATH"
-        let access_token = body.access_token,
-          refresh_token = body.refresh_token;
-        let room_code = generate_room_code(access_token);
+  request.post(authOptions, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+      // modify data.json
+      // when you modify data.json, we need to make sure the path is correct, relative to where you "node PATH"
+      let access_token = body.access_token,
+        refresh_token = body.refresh_token;
+      let room_code = generate_room_code(access_token);
 
-        // we can also pass the token to the browser to make requests from there
-        res.redirect(
-          "http://192.168.1.30:3000/#" +
-            querystring.stringify({
-              room_code: room_code
-              // logged_in: "true"
-            })
-        );
-      } else {
-        res.redirect(
-          "/#" +
-            querystring.stringify({
-              error: "invalid_token"
-            })
-        );
-      }
-    });
-  }
+      // we can also pass the token to the browser to make requests from there
+      res.redirect(
+        "http://192.168.1.30:3000/#" +
+          querystring.stringify({
+            room_code: room_code
+            // logged_in: "true"
+          })
+      );
+    } else {
+      res.redirect(
+        "/#" +
+          querystring.stringify({
+            error: "invalid_token"
+          })
+      );
+    }
+  });
 });
 
 // requesting access token from refresh token
