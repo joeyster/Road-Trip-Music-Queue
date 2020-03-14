@@ -257,15 +257,12 @@ search_song = (passed_room_code, query) => {
   return new Promise(async resolve => {
     let access_token = await get_acccess_token(passed_room_code);
     spotifyApi.setAccessToken(access_token);
-    console.log("here");
     spotifyApi
       .searchTracks(query, { type: "track", limit: 5 })
       .then(response => {
-        console.log("there");
         return response;
       })
       .then(json => {
-        console.log("bear");
         // found
         if (json.body.tracks.items[0] !== undefined) {
           resolve({ song_array: json.body.tracks.items });
