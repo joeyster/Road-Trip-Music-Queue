@@ -27,7 +27,7 @@ class SearchBar extends Component {
           <button
             id="search_btn"
             className="btn btn-block btn-dark shadow-none"
-            onClick={this.send_song_array}
+            onClick={this.search_song_array}
           >
             +
           </button>
@@ -36,7 +36,7 @@ class SearchBar extends Component {
     );
   }
 
-  send_song_array = () => {
+  search_song_array = () => {
     let query = document.getElementById("search_bar").value;
     if (query !== "") {
       let url = "http://192.168.1.30:8888/search";
@@ -53,9 +53,11 @@ class SearchBar extends Component {
       };
       fetch(url, options)
         .then(response => {
+          console.log(response);
           return response.json();
         })
         .then(json => {
+          console.log("poopie: ", json.song_array);
           this.props.get_song_array(json.song_array);
         })
         .catch(err => {

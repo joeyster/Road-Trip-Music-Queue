@@ -47,6 +47,7 @@ class Remote extends Component {
   }
 
   set_array = child_data => {
+    console.log(child_data);
     this.setState({ song_array: child_data });
   };
 }

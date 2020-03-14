@@ -11,18 +11,18 @@
     node app.js 
 */
 
-let express = require("express"); // Express web server framework
-let request = require("request"); // "Request" library
-let querystring = require("querystring");
-let fs = require("fs");
-let bodyParser = require("body-parser");
-
-let SpotifyWebApi = require("spotify-web-api-node"); // Spotify API
-const spotifyApi = new SpotifyWebApi();
-
 let client_id = "19427a009053421cad910c10b315a050"; // Your client id
 let client_secret = "9dabb10eca184b89bce885069db5f4e2"; // Your secret
 let redirect_uri = "http://192.168.1.30:8888/callback"; // Or Your redirect uri
+
+const express = require("express"); // Express web server framework
+const request = require("request"); // "Request" library
+const querystring = require("querystring");
+const fs = require("fs");
+const bodyParser = require("body-parser");
+
+const SpotifyWebApi = require("spotify-web-api-node"); // Spotify API
+const spotifyApi = new SpotifyWebApi();
 
 let stateKey = "spotify_auth_state";
 let app = express();
@@ -102,7 +102,7 @@ app.get("/callback", function(req, res) {
   });
 });
 
-// requesting access token from refresh token
+// requesting access token from refresh token (currently unused?)
 app.get("/refresh_token", function(req, res) {
   let refresh_token = req.query.refresh_token;
   let authOptions = {
@@ -144,15 +144,12 @@ app.options("/check_code", function(req, res) {
 });
 
 app.post("/check_code", function(req, res) {
+  //check if room code from request exists inside json file
   res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
   let file_data = fs.readFileSync("data/data.json", "utf-8");
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
 
-  // let diff = file_data[room_code]["expire_time"] - Date.now();
-  // console.log(diff / 1000 / 60 + " minutes left");
-
-  // if room code exists inside json file
   if (
     file_data[room_code] === undefined ||
     Date.now() > file_data[room_code]["expire_time"]
@@ -203,6 +200,7 @@ app.options("/create_playlist", function(req, res) {
 });
 
 app.post("/create_playlist", (req, res) => {
+  //create a playlist in host's Spotify account
   res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
   let room_code = req.body["room_code"];
   create_playlist(room_code);
@@ -217,27 +215,12 @@ app.options("/search", (req, res) => {
 });
 
 app.post("/search", async (req, res) => {
+  // search for song
   res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  let passed_room_code = req.body["room_code"];
-  let access_token = await get_acccess_token(passed_room_code);
-  spotifyApi.setAccessToken(access_token);
+  let room_code = req.body["room_code"];
   let query = req.body["search_query"];
-  spotifyApi
-    .searchTracks(query, { type: "track", limit: 5 })
-    .then(response => {
-      return response;
-    })
-    .then(json => {
-      // found
-      if (json.body.tracks.items[0] !== undefined) {
-        res.json({ song_array: json.body.tracks.items });
-      } else {
-        console.log("Track undefined");
-      }
-    })
-    .catch(err => {
-      console.log("Something went wrong!", err);
-    });
+  let song_list = await search_song(room_code, query);
+  res.json(song_list);
 });
 
 app.options("/add_song", function(req, res) {
@@ -248,6 +231,7 @@ app.options("/add_song", function(req, res) {
 });
 
 app.post("/add_song", async (req, res) => {
+  // add song to playlist
   res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
   let room_code = req.body["room_code"];
   let uri = req.body["uri"];
@@ -268,6 +252,32 @@ app.post("/clear_playlist", async (req, res) => {
   clear_playlist(room_code);
   res.status(200).end();
 });
+
+search_song = (passed_room_code, query) => {
+  return new Promise(async resolve => {
+    let access_token = await get_acccess_token(passed_room_code);
+    spotifyApi.setAccessToken(access_token);
+    console.log("here");
+    spotifyApi
+      .searchTracks(query, { type: "track", limit: 5 })
+      .then(response => {
+        console.log("there");
+        return response;
+      })
+      .then(json => {
+        console.log("bear");
+        // found
+        if (json.body.tracks.items[0] !== undefined) {
+          resolve({ song_array: json.body.tracks.items });
+        } else {
+          console.log("Track undefined");
+        }
+      })
+      .catch(err => {
+        console.log("Something went wrong!", err);
+      });
+  });
+};
 
 clear_playlist = async passed_room_code => {
   let access_token = await get_acccess_token(passed_room_code);
@@ -402,8 +412,8 @@ index_getter = items => {
   return -1; // DNE
 };
 
-//modify json file with
 generate_room_code = token => {
+  //modify json file with
   let room_code = "";
   let obj = {};
   // let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -425,8 +435,8 @@ generate_room_code = token => {
   return room_code;
 };
 
-//append {room_code: token} into file
 append_to_json_file = entry => {
+  //append {room_code: token} into file
   fs.readFile(
     // get json
     "data/data.json",
@@ -442,8 +452,8 @@ append_to_json_file = entry => {
   );
 };
 
-// Generates a random string containing numbers and letters
 let generateRandomString = function(length) {
+  // Generates a random string containing numbers and letters
   let text = "";
   let possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
