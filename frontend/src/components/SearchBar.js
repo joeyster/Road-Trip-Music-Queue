@@ -39,7 +39,7 @@ class SearchBar extends Component {
   search_song_array = () => {
     let query = document.getElementById("search_bar").value;
     if (query !== "") {
-      let url = "http://192.168.1.30:8888/search";
+      let url = "https://wavesterioapi.herokuapp.com/search";
       let options = {
         method: "POST",
         mode: "cors", // no-cors, cors, *same-origin
@@ -57,7 +57,6 @@ class SearchBar extends Component {
           return response.json();
         })
         .then(json => {
-          console.log("poopie: ", json.song_array);
           this.props.get_song_array(json.song_array);
         })
         .catch(err => {

@@ -29,7 +29,7 @@ class Song extends Component {
   }
 
   add_song = () => {
-    let url = "http://192.168.1.30:8888/add_song";
+    let url = "https://wavesterioapi.herokuapp.com/add_song";
     let options = {
       method: "POST",
       mode: "cors", // no-cors, cors, *same-origin

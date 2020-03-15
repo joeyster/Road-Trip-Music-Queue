@@ -13,13 +13,15 @@
 
 let client_id = "19427a009053421cad910c10b315a050"; // Your client id
 let client_secret = "9dabb10eca184b89bce885069db5f4e2"; // Your secret
-let redirect_uri = "http://192.168.1.30:8888/callback"; // Or Your redirect uri
+let redirect_uri = "https://wavesterioapi.herokuapp.com/callback"; // Or Your redirect uri
 
 const express = require("express"); // Express web server framework
 const request = require("request"); // "Request" library
 const querystring = require("querystring");
 const fs = require("fs");
 const bodyParser = require("body-parser");
+
+const cors = require("cors");
 
 const SpotifyWebApi = require("spotify-web-api-node"); // Spotify API
 const spotifyApi = new SpotifyWebApi();
@@ -28,6 +30,7 @@ let stateKey = "spotify_auth_state";
 let app = express();
 //need to use it for json to be used
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use(express.static(__dirname + "/public"));
 
@@ -85,7 +88,7 @@ app.get("/callback", function(req, res) {
 
       // we can also pass the token to the browser to make requests from there
       res.redirect(
-        "http://192.168.1.30:3000/#" +
+        "https://wavester.herokuapp.com/#" +
           querystring.stringify({
             room_code: room_code
             // logged_in: "true"
@@ -131,21 +134,30 @@ app.get("/refresh_token", function(req, res) {
 
 app.get("/api", function(req, res) {
   //deprecated. keep for reference
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   let data = fs.readFileSync("data/data.json", "utf-8");
   res.json(data);
 });
 
-app.options("/check_code", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
+// app.options("/check_code", function(req, res) {
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://wavester.herokuapp.com/"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.status(200).end();
+// });
 
 app.post("/check_code", function(req, res) {
   //check if room code from request exists inside json file
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   let file_data = fs.readFileSync("data/data.json", "utf-8");
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
@@ -160,16 +172,22 @@ app.post("/check_code", function(req, res) {
   }
 });
 
-app.options("/time_left", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
+// app.options("/time_left", function(req, res) {
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://wavester.herokuapp.com/"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.status(200).end();
+// });
 
 app.post("/time_left", function(req, res) {
   //respond with expire_time
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   let file_data = fs.readFileSync("data/data.json", "utf-8");
   file_data = JSON.parse(file_data);
   let room_code = req.body["message"];
@@ -177,77 +195,107 @@ app.post("/time_left", function(req, res) {
   res.json({ message: expire_time });
 });
 
-app.options("/add_queue", function(req, res) {
-  //deprecated. keep for reference
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
+// app.options("/add_queue", function(req, res) {
+//   //deprecated. keep for reference
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://wavester.herokuapp.com/"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.status(200).end();
+// });
 
 app.post("/add_queue", function(req, res) {
   //deprecated. keep for reference
   // need to setHeader again because sending back to 3000
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   res.status(200).end();
 });
 
-app.options("/create_playlist", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
+// app.options("/create_playlist", function(req, res) {
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://wavester.herokuapp.com/"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.status(200).end();
+// });
 
 app.post("/create_playlist", (req, res) => {
   //create a playlist in host's Spotify account
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   let room_code = req.body["room_code"];
   create_playlist(room_code);
   res.status(200).end();
 });
 
-app.options("/search", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
+// app.options("/search", (req, res) => {
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://wavester.herokuapp.com/"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.status(200).end();
+// });
 
 app.post("/search", async (req, res) => {
   // search for song
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   let room_code = req.body["room_code"];
   let query = req.body["search_query"];
   let song_list = await search_song(room_code, query);
   res.json(song_list);
 });
 
-app.options("/add_song", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
+// app.options("/add_song", function(req, res) {
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://wavester.herokuapp.com/"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.status(200).end();
+// });
 
 app.post("/add_song", async (req, res) => {
   // add song to playlist
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   let room_code = req.body["room_code"];
   let uri = req.body["uri"];
   add_to_playlist(room_code, uri);
   res.status(200).end();
 });
 
-app.options("/clear_playlist", function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.status(200).end();
-});
+// app.options("/clear_playlist", function(req, res) {
+//   res.setHeader(
+//     "Access-Control-Allow-Origin",
+//     "https://wavester.herokuapp.com/"
+//   );
+//   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.staktus(200).end();
+// });
 
 app.post("/clear_playlist", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://192.168.1.30:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wavester.herokuapp.com"
+  );
   let room_code = req.body["room_code"];
   clear_playlist(room_code);
   res.status(200).end();
