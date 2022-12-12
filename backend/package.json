@@ -4,7 +4,7 @@
   "description": "Basic examples of the Spotify authorization flows through OAuth 2",
   "version": "0.0.1",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "querystring": "~0.2.0",
     "request": "^2.88.0",
     "spotify-web-api-node": "^4.0.0"
